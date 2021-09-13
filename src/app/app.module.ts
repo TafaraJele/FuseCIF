@@ -20,8 +20,16 @@ import { appRoutes } from 'app/app.routing';
 import { MicroFrontendRouteReuseStrategy } from 'services/route-reuse-strategy';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { environment as env } from '../environments/environment';
+import { environment as env, environment } from '../environments/environment';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
+import { FuseMatModule } from './shared/fuse-mat/fuse-mat.module';
+import { FuseAlertModule } from '@fuse/components/alert';
+import { SharedModule } from './shared/shared.module';
+import { FuseHighlightModule } from '@fuse/components/highlight';
+import { MatTabsModule } from '@angular/material/tabs';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { reducers, metaReducers } from './mock-api/store';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy: PreloadAllModules,
@@ -33,19 +41,34 @@ const routerConfig: ExtraOptions = {
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
-
         RouterModule.forRoot(appRoutes, routerConfig),
-
         // Fuse, FuseConfig & FuseMockAPI
         FuseModule,
         FuseConfigModule.forRoot(appConfig),
         FuseMockApiModule.forRoot(mockApiServices),
+        FuseMatModule,
+  MatTabsModule,
+  StoreModule.forRoot(reducers, {
+    metaReducers,
+    runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true,
+        strictStateSerializability: false,
+        strictActionSerializability: false
+    }
+}),
+EffectsModule.forRoot([]),
+// !environment.production ? StoreDevtoolsModule.instrument() : [],
+
 
         // Core module of your application
         CoreModule,
 
         // Layout module of your application
         LayoutModule,
+        FuseAlertModule,
+        SharedModule,
+        FuseHighlightModule,  
 
         // 3rd party modules that require global configuration via forRoot
         MarkdownModule.forRoot({}),
@@ -68,5 +91,6 @@ const routerConfig: ExtraOptions = {
           },
     ],
     bootstrap: [AppComponent],
+    
 })
 export class AppModule {}

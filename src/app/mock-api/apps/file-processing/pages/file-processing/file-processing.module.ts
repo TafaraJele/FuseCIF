@@ -10,6 +10,7 @@ import { FilePageComponent } from '../file-page/file-page.component';
 import { SettingsComponent } from '../settings/settings.component';
 import { FilesResolver } from '../../services/files.resolver';
 import { RouterModule, Routes } from '@angular/router';
+import { SharedModule } from 'app/shared/shared.module';
 
 const routes: Routes = [
   {
@@ -51,7 +52,8 @@ const routes: Routes = [
   declarations: [FileDefundComponent, FileDefundListComponent, FileFundloadComponent, FileFundListComponent, FileListPageComponent, FilePageComponent, FilePageManagerComponent, SettingsComponent],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    SharedModule
   ]
 })
 export class FileProcessingModule { }

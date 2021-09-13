@@ -27,7 +27,7 @@ export const environment = {
       httpInterceptor: {
         allowedList: [`${apiUrl}/*`],
       },
-      fileProcessingUrl:'https://indigodemo.westeurope.cloudapp.azure.com:441/file-processing'
+      fileProcessingUrl:'https://localhost:44395'
 };
 
 /*
