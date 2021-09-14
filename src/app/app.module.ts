@@ -30,6 +30,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { reducers, metaReducers } from './mock-api/store';
+import { FilePageManagerComponent } from './mock-api/apps/file-processing/pages/file-page-manager/file-page-manager.component';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy: PreloadAllModules,
@@ -47,18 +48,18 @@ const routerConfig: ExtraOptions = {
         FuseConfigModule.forRoot(appConfig),
         FuseMockApiModule.forRoot(mockApiServices),
         FuseMatModule,
-  MatTabsModule,
-  StoreModule.forRoot(reducers, {
-    metaReducers,
-    runtimeChecks: {
-        strictStateImmutability: true,
-        strictActionImmutability: true,
-        strictStateSerializability: false,
-        strictActionSerializability: false
-    }
-}),
-EffectsModule.forRoot([]),
-// !environment.production ? StoreDevtoolsModule.instrument() : [],
+        MatTabsModule,
+        StoreModule.forRoot(reducers, {
+            metaReducers,
+            runtimeChecks: {
+                strictStateImmutability: true,
+                strictActionImmutability: true,
+                strictStateSerializability: false,
+                strictActionSerializability: false
+            }
+        }),
+        EffectsModule.forRoot([]),
+        // !environment.production ? StoreDevtoolsModule.instrument() : [],
 
 
         // Core module of your application
@@ -68,16 +69,16 @@ EffectsModule.forRoot([]),
         LayoutModule,
         FuseAlertModule,
         SharedModule,
-        FuseHighlightModule,  
+        FuseHighlightModule,
 
         // 3rd party modules that require global configuration via forRoot
         MarkdownModule.forRoot({}),
         AuthModule.forRoot({
             ...env.auth,
             httpInterceptor: {
-              ...env.httpInterceptor,
+                ...env.httpInterceptor,
             },
-          }),
+        }),
     ],
     providers: [
         {
@@ -88,9 +89,12 @@ EffectsModule.forRoot([]),
             provide: HTTP_INTERCEPTORS,
             useClass: AuthHttpInterceptor,
             multi: true,
-          },
+        },
+        {
+            provide : FilePageManagerComponent
+        },
     ],
     bootstrap: [AppComponent],
-    
+
 })
-export class AppModule {}
+export class AppModule { }

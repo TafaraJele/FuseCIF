@@ -1,0 +1,104 @@
+<div class="w-full max-w-3xl">
+
+    <!-- Form -->
+    <form [formGroup]="settingsForm">
+
+        <!-- Section -->
+        <div class="w-full">
+            <div class="text-xl">Amlock</div>
+            <div class="text-secondary">Set amlcock settings, they are required!</div>
+        </div>
+        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+            <span class="sm:col-span-4">
+                <mat-label>Prospect Type</mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Prospect Type..."
+                        [formControlName]="'prospectType'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label> Private Banking Customer</mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Private Banking Customer..."
+                        [formControlName]="'privateBankingCustomer'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Branch ID</mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input class="form-control" placeholder="Branch ID..." [formControlName]="'branchID'"
+                        matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Card issue debit account number</mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Card issue debit account number..."
+                        [formControlName]="'cardIssueDebitAccountNumber'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Match Found</mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Match Found..."
+                        [formControlName]="'matchFound'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>No Match Found
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="No Match Found..."
+                        [formControlName]="'noMatchFound'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Card funding credit account number
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Card funding credit account number..."
+                        [formControlName]="'cardFundingCreditAccountNumber'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Amlock Rejected
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Amlock Rejected..."
+                        [formControlName]="'amlockRejected'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>ArmLock Service Url
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="ArmLock Service Url..."
+                        [formControlName]="'armLockServiceUrl'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Source Type
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Source Type..."
+                        [formControlName]="'sourceType'" matInput>
+                </mat-form-field>
+            </span>   
+
+        </div>       
+
+        <!-- Section -->
+
+
+        <!-- Divider -->
+        <div class="mt-11 mb-10 border-t"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end">
+           
+            <button (click)="onSave()" class="ml-4" mat-flat-button type="button" [color]="'primary'">Save
+            </button>
+        </div>
+    </form>
+
+</div>

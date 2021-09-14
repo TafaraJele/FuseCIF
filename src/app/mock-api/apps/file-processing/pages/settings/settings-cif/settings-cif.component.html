@@ -1,0 +1,121 @@
+<div class="w-full max-w-3xl">
+
+    <!-- Form -->
+    <form [formGroup]="settingsForm">
+
+        <!-- Section -->
+        <div class="w-full">
+            <div class="text-xl">Application</div>
+            <div class="text-secondary">Set all the application settings, they are required!</div>
+        </div>
+        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+            <span class="sm:col-span-4">
+                <mat-label>Match Min Value</mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="number" class="form-control" placeholder="Match min value..."
+                        [formControlName]="'matchMinValue'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Card Charge Fee</mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="number" class="form-control" placeholder="Card charge fee..."
+                        [formControlName]="'cardChargeFee'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Account Prefix</mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input class="form-control" placeholder="Account prefix..." [formControlName]="'accountPrefix'"
+                        matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Card issue debit account number</mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Card issue debit account number..."
+                        [formControlName]="'cardIssueDebitAccountNumber'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Card issue credit account number</mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Card issue credit account number..."
+                        [formControlName]="'cardIssueCreditAccountNumber'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Card funding debit account number
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Card funding debit account number..."
+                        [formControlName]="'cardFundingDebitAccountNumber'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Card funding credit account number
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Card funding credit account number..."
+                        [formControlName]="'cardFundingCreditAccountNumber'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Card defunding debit account number
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Card defunding debit account number..."
+                        [formControlName]="'cardDefundingDebitAccountNumber'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Card defunding credit account number
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Card defunding debit account number..."
+                        [formControlName]="'cardDefundingDebitAccountNumber'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Flex Cube Web Service Uri
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Flex Cube Web Service Uri..."
+                        [formControlName]="'flexCubeWebServiceUri'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>SFTP Payment file path
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="SFTP Payment file path..."
+                        [formControlName]="'sFTPPaymentFilePath'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Branch ID
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Banch ID..." [formControlName]="'branch'"
+                        matInput>
+                </mat-form-field>
+            </span>
+
+
+        </div>       
+
+        <!-- Section -->
+
+
+        <!-- Divider -->
+        <div class="mt-11 mb-10 border-t"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end">
+            
+            <button (click)="onSave()" class="ml-4" mat-flat-button type="button" [color]="'primary'">Save
+            </button>
+        </div>
+    </form>
+
+</div>

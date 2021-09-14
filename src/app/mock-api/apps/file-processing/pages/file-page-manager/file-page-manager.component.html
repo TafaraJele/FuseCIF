@@ -1,1 +1,6 @@
-<p>file-page-manager works!</p>
+<div *ngIf="file">
+    <app-file-page *ngIf="file.requestType ==='cardrequest'" [file]="file"></app-file-page>
+    <!-- <app-file-fundload *ngIf="file.requestType ==='cardfunding'" [file]="file">
+    </app-file-fundload>
+    <app-file-defund *ngIf = "file.requestType === 'carddefunding'" [file]= "file"></app-file-defund> -->
+</div>

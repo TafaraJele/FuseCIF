@@ -10,6 +10,9 @@ import * as UserActions from 'app/mock-api/store/user/actions';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { FormControl } from '@angular/forms';
+import { FilePageManagerComponent } from '../file-page-manager/file-page-manager.component';
+import { FileProcessingModule } from '../file-processing/file-processing.module';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-file-list-page',
@@ -45,7 +48,7 @@ export class FileListPageComponent implements OnInit {
   sortName: string | null = null
   sortValue: string | null = null
   constructor(private store: Store<AppState>,
-    private service: FileService,) {
+    private service: FileService, private fileManager: FilePageManagerComponent, private router: Router) {
   }
 
 
@@ -142,8 +145,14 @@ export class FileListPageComponent implements OnInit {
   
     }
     ViewFileDetails(file):any{
+      debugger
+      this.service.changeMessage(file)
+      var fileManagers = new FilePageManagerComponent(this.service)
+      fileManagers.ngOnInit()
+      this.router.navigate(['/file-manager/files',file.id]);
 
     }
+    
 
 
   onApprove(file): any {

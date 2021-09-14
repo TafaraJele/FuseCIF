@@ -4,7 +4,7 @@ import { CIFConfiguration } from 'app/shared/models/cif-configuration.model'
 import { FileApproval } from 'app/shared/models/file-approval.model'
 import { FileMetadata } from 'app/shared/models/filemetadata.model'
 import { environment } from 'environments/environment'
-import { Observable } from 'rxjs'
+import { BehaviorSubject, Observable } from 'rxjs'
 
 
 const baseUrl = environment.fileProcessingUrl
@@ -32,9 +32,8 @@ export class FileService {
     loadFileAccounts(fileBatchNumber: string): Observable<any> {
         return this._httpClient.get(baseUrl + '/api/files/' + fileBatchNumber)
     }
-    loadFileCards(fileBatchNumber:string): Observable<any>
-    {     
-        return this._httpClient.get(baseUrl + '/api/accounts/' + fileBatchNumber +'/account-cards',httpOptions)
+    loadFileCards(fileBatchNumber: string): Observable<any> {
+        return this._httpClient.get(baseUrl + '/api/accounts/' + fileBatchNumber + '/account-cards', httpOptions)
     }
 
     approveFile(file: Partial<FileMetadata>): Observable<any> {
@@ -47,9 +46,9 @@ export class FileService {
         const approval = new FileApproval()
         approval.fileReference = file.fileReference
         approval.batchNumber = file.batchNumber
-      
+
         return this._httpClient.post(baseUrl + '/api/files/resubmit', approval, httpOptions)
-       
+
     }
 
     addSettings(settings: Partial<CIFConfiguration>): Observable<any> {
@@ -62,19 +61,29 @@ export class FileService {
 
     approveFundOrDefund(file: Partial<FileMetadata>): Observable<any> {
         return this._httpClient.post(baseUrl + '/api/accounts/approvefund-defund-requests', file, httpOptions)
-      }
+    }
 
-      reApproveChargeFee(file: Partial<FileMetadata>):Observable<any>{     
-         
-          return this._httpClient.post(baseUrl + '/api/files/resubmit-chargefee',file , httpOptions )
+    reApproveChargeFee(file: Partial<FileMetadata>): Observable<any> {
 
-      }
+        return this._httpClient.post(baseUrl + '/api/files/resubmit-chargefee', file, httpOptions)
 
-      loadFileFundRequests(fileBatchNumber: string):  Observable<any> {
+    }
+
+    loadFileFundRequests(fileBatchNumber: string): Observable<any> {
         return this._httpClient.get(baseUrl + '/api/accounts/cardfundrequests/' + fileBatchNumber, httpOptions)
     }
-    loadFileDeFundRequests(fileBatchNumber: string):  Observable<any> {
+    loadFileDeFundRequests(fileBatchNumber: string): Observable<any> {
         return this._httpClient.get(baseUrl + '/api/accounts/carddefundrequests/' + fileBatchNumber, httpOptions)
+    }
+    
+    file: FileMetadata = null
+    private messageSource = new BehaviorSubject<FileMetadata>(new FileMetadata)
+    private userApplications = new BehaviorSubject<any>(this.file)
+    currentMessage = this.messageSource.asObservable()
+    currentUserApplications = this.userApplications.asObservable()
+    changeMessage(file: FileMetadata) {
+        this.messageSource.next(file)
+
     }
 
     exportToCsv(filename: string, rows: object[]): any {

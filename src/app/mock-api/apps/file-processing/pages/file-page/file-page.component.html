@@ -1,1 +1,320 @@
-<p>file-page works!</p>
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+
+    <!-- Header -->
+    <div
+        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        <!-- Loader -->
+        <!-- <div
+            class="absolute inset-x-0 bottom-0"
+            *ngIf="isLoading">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div> -->
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Card Requests Details</div>
+        <!-- Actions -->
+        <div class="flex flex-shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <!-- Search -->
+            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
+                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                    [placeholder]="'Search card requests'">
+            </mat-form-field>
+            <!-- Add product button -->
+            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="exportToCsv('Approved')">
+                <mat-icon [svgIcon]="'heroicons_outline:download'"></mat-icon>
+                <span class="ml-2 mr-1">DownLoad</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
+
+        <!-- Products list -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+            <ng-container>
+                <mat-tab-group class="mt-4">
+                    <mat-tab label="Success">
+                        <mat-card id='cover-card' class='bg-indigo-200'>
+                            <div class="grid grid-cols-12 gap-1">
+                                <div class="col-start-1 col-end-4"> Name </div>
+                                <div class="col-start-5 "> Surname</div>
+                                <div class="col-start-6 col-end-7">National ID</div>
+                                <div class="col-start-8 "> Account Number</div>
+                                <div class="col-start-10">Employee Code </div>
+                                <div class="col-start-11"> Prospect ID</div>
+                                <div class="col-start-12">Status</div>
+                            </div>
+                        </mat-card>
+
+                        <mat-card id='cover-card' *ngFor='let file of successPageSlice' class="my-2">
+                            <div class="grid grid-cols-12 gap-1 ">
+                                <div class="col-start-1 col-end-4">
+
+                                    <div class="flex flex-row ...">
+
+                                        <div class="approvedCircle"> </div> {{file.firstName}}
+
+                                    </div>
+
+                                </div>
+                                <div class="col-start-5"> {{file.lastName}}</div>
+                                <div class="col-start-6 col-end-7"> {{file.customerIDNumber}}</div>
+                                <div class="col-start-8 "> {{ getAccountNumber(file.id)}}</div>
+                                <div class="col-start-10">{{file.employeeCode}}
+                                </div>
+                                <div class="col-start-11">
+                                    {{file.prospectId}}
+                                </div>
+                                <div class="col-start-12">
+                                    {{file.status}}
+                                </div>
+                            </div>
+
+                        </mat-card>
+
+
+                        <mat-card id='cover-card' *ngIf="customers == undefined">
+                            <div class="loading-data"> Loading data... </div>
+
+                        </mat-card>
+                        <mat-card class="loading-data" id='cover-card'
+                            *ngIf="customers != undefined && customers.length == 0">
+                            No data...
+                        </mat-card>
+                        <mat-paginator *ngIf="customers.length > 0" [length]="customers.length" [pageSize]="5"
+                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
+                        </mat-paginator>
+
+                    </mat-tab>
+                    <mat-tab label="Errors">
+                        <mat-card id='cover-card' class='bg-indigo-200'>
+                            <div class="grid grid-cols-12 gap-1">
+                                <div class="col-start-1 col-end-4"> Name </div>
+                                <div class="col-start-5 "> Surname</div>
+                                <div class="col-start-6 col-end-7">National ID</div>
+                                <div class="col-start-8 "> Account Number</div>
+                                <div class="col-start-10">Employee Code </div>
+                                <div class="col-start-11"> Prospect ID</div>
+                                <div class="col-start-12">Status</div>
+                            </div>
+                        </mat-card>
+
+                        <mat-card id='cover-card' *ngFor='let file of errorPageSlice' class="my-2">
+                            <div class="grid grid-cols-12 gap-1 ">
+                                <div class="col-start-1 col-end-4">
+
+                                    <div class="flex flex-row ...">
+
+                                        <div class="approvedCircle"> </div> {{file.firstName}}
+
+                                    </div>
+
+                                </div>
+                                <div class="col-start-5"> {{file.lastName}}</div>
+                                <div class="col-start-6 col-end-7"> {{file.customerIDNumber}}</div>
+                                <div class="col-start-8 "> {{ getAccountNumber(file.id)}}</div>
+                                <div class="col-start-10">{{file.employeeCode}}
+                                </div>
+                                <div class="col-start-11">
+                                    {{file.prospectId}}
+                                </div>
+                                <div class="col-start-12">
+                                    {{file.status}}
+                                </div>
+                            </div>
+
+                        </mat-card>
+
+
+                        <mat-card id='cover-card' *ngIf="customers == undefined">
+                            <div class="loading-data"> Loading data... </div>
+
+                        </mat-card>
+                        <mat-card class="loading-data" id='cover-card'
+                            *ngIf="customers != undefined && customers.length == 0">
+                            No data...
+                        </mat-card>
+                        <mat-paginator *ngIf="customers.length > 0" [length]="customers.length" [pageSize]="5"
+                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
+                        </mat-paginator>
+
+                    </mat-tab>
+                    <mat-tab label="Match">
+                        <mat-card id='cover-card' class='bg-indigo-200'>
+                            <div class="grid grid-cols-12 gap-1">
+                                <div class="col-start-1 col-end-4"> Name </div>
+                                <div class="col-start-5 "> Surname</div>
+                                <div class="col-start-6 col-end-7">National ID</div>
+                                <div class="col-start-8 "> Account Number</div>
+                                <div class="col-start-10">Employee Code </div>
+                                <div class="col-start-11"> Prospect ID</div>
+                                <div class="col-start-12">Status</div>
+                            </div>
+                        </mat-card>
+
+                        <mat-card id='cover-card' *ngFor='let file of rejectedPageSlice' class="my-2">
+                            <div class="grid grid-cols-12 gap-1 ">
+                                <div class="col-start-1 col-end-4">
+
+                                    <div class="flex flex-row ...">
+
+                                        <div class="approvedCircle"> </div> {{file.firstName}}
+
+                                    </div>
+
+                                </div>
+                                <div class="col-start-5"> {{file.lastName}}</div>
+                                <div class="col-start-6 col-end-7"> {{file.customerIDNumber}}</div>
+                                <div class="col-start-8 "> {{ getAccountNumber(file.id)}}</div>
+                                <div class="col-start-10">{{file.employeeCode}}
+                                </div>
+                                <div class="col-start-11">
+                                    {{file.prospectId}}
+                                </div>
+                                <div class="col-start-12">
+                                    {{file.status}}
+                                </div>
+                            </div>
+
+                        </mat-card>
+
+
+                        <mat-card id='cover-card' *ngIf="customers == undefined">
+                            <div class="loading-data"> Loading data... </div>
+
+                        </mat-card>
+                        <mat-card class="loading-data" id='cover-card'
+                            *ngIf="customers != undefined && customers.length == 0">
+                            No data...
+                        </mat-card>
+                        <mat-paginator *ngIf="customers.length > 0" [length]="customers.length" [pageSize]="5"
+                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
+                        </mat-paginator>
+
+                    </mat-tab>
+                    <mat-tab label="Rejected">
+                        <mat-card id='cover-card' class='bg-indigo-200'>
+                            <div class="grid grid-cols-12 gap-1">
+                                <div class="col-start-1 col-end-4"> Name </div>
+                                <div class="col-start-5 "> Surname</div>
+                                <div class="col-start-6 col-end-7">National ID</div>
+                                <div class="col-start-8 "> Account Number</div>
+                                <div class="col-start-10">Employee Code </div>
+                                <div class="col-start-11"> Prospect ID</div>
+                                <div class="col-start-12">Status</div>
+                            </div>
+                        </mat-card>
+
+                        <mat-card id='cover-card' *ngFor='let file of amlockRejectedPageSlice' class="my-2">
+                            <div class="grid grid-cols-12 gap-1 ">
+                                <div class="col-start-1 col-end-4">
+
+                                    <div class="flex flex-row ...">
+
+                                        <div class="approvedCircle"> </div> {{file.firstName}}
+
+                                    </div>
+
+                                </div>
+                                <div class="col-start-5"> {{file.lastName}}</div>
+                                <div class="col-start-6 col-end-7"> {{file.customerIDNumber}}</div>
+                                <div class="col-start-8 "> {{ getAccountNumber(file.id)}}</div>
+                                <div class="col-start-10">{{file.employeeCode}}
+                                </div>
+                                <div class="col-start-11">
+                                    {{file.prospectId}}
+                                </div>
+                                <div class="col-start-12">
+                                    {{file.status}}
+                                </div>
+                            </div>
+
+                        </mat-card>
+
+
+                        <mat-card id='cover-card' *ngIf="customers == undefined">
+                            <div class="loading-data"> Loading data... </div>
+
+                        </mat-card>
+                        <mat-card class="loading-data" id='cover-card'
+                            *ngIf="customers != undefined && customers.length == 0">
+                            No data...
+                        </mat-card>
+                        <mat-paginator *ngIf="customers.length > 0" [length]="customers.length" [pageSize]="5"
+                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
+                        </mat-paginator>
+
+                    </mat-tab>
+                    <mat-tab label="Card status">
+                        <mat-card id='cover-card' class='bg-indigo-200'>
+                            <div class="grid grid-cols-12 gap-1">
+                                <div class="col-start-1 col-end-4"> Employee Code </div>
+                                <div class="col-start-5 "> Account Number</div>
+                                <div class="col-start-6 col-end-7">Card Reference</div>
+                                <div class="col-start-8 "> Charge Fee Debit Status</div>
+                                <div class="col-start-10">Charge Fee Credit Status</div>
+                                <div class="col-start-11"> Prospect ID</div>
+                                <div class="col-start-12">Card Status</div>
+                            </div>
+
+                        </mat-card>
+
+                        <mat-card id='cover-card' *ngFor='let card of filteredCards' class="my-2">
+                            <div class="grid grid-cols-12 gap-1 ">
+                                <div class="col-start-1 col-end-4">
+
+                                    <div class="flex flex-row ...">
+
+                                        <div class="approvedCircle"> </div> {{card.employeeCode}}
+
+                                    </div>
+
+                                </div>
+                                <div class="col-start-5"> {{card.accountNumber}}</div>
+                                <div class="col-start-6 col-end-7"> {{card.reference}}</div>
+                                <div class="col-start-8 "> {{ card.debitStatus}}</div>
+                                <div class="col-start-10">{{card.creditStatus}}
+                                </div>
+                                <div class="col-start-11">
+                                    {{card.cardStatus}}
+                                </div>
+                                <div class="col-start-12">
+                                    {{card.status}}
+                                </div>
+                            </div>
+
+                        </mat-card>
+
+
+                        <mat-card id='cover-card' *ngIf="customers == undefined">
+                            <div class="loading-data"> Loading data... </div>
+
+                        </mat-card>
+                        <mat-card class="loading-data" id='cover-card'
+                            *ngIf="customers != undefined && customers.length == 0">
+                            No data...
+                        </mat-card>
+                        <mat-paginator *ngIf="customers.length > 0" [length]="customers.length" [pageSize]="5"
+                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
+                        </mat-paginator>
+
+                    </mat-tab>
+
+
+                </mat-tab-group>
+
+            </ng-container>
+
+
+            <ng-template #Files>
+                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no
+                    customers!
+                </div>
+            </ng-template>
+
+        </div>
+
+    </div>
+
+</div>

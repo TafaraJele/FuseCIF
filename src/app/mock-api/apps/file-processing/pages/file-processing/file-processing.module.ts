@@ -11,35 +11,40 @@ import { SettingsComponent } from '../settings/settings.component';
 import { FilesResolver } from '../../services/files.resolver';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
+import { SettingsCifComponent } from '../settings/settings-cif/settings-cif.component';
+import { SettingsPaymentFileComponent } from '../settings/settings-payment-file/settings-payment-file.component';
+import { SettingsAmlockComponent } from '../settings/settings-amlock/settings-amlock.component';
+import { SettingsFimiComponent } from '../settings/settings-fimi/settings-fimi.component';
+import { SettingsFlexcubeComponent } from '../settings/settings-flexcube/settings-flexcube.component';
 
 const routes: Routes = [
   {
     path: 'cards',
     component: FileListPageComponent,
-    // resolve: {
-    //   files: FilesResolver
-    // }
+    resolve: {
+      files: FilesResolver
+    }
   },
   {
     path: 'funding',
     component: FileFundListComponent,
-    // resolve: {
-    //   files: FilesResolver
-    // }
+    resolve: {
+      files: FilesResolver
+    }
   },
   {
     path: 'defunding',
     component: FileDefundListComponent,
-    // resolve: {
-    //   files: FilesResolver
-    // }
+    resolve: {
+      files: FilesResolver
+    }
   },
   {
     path: 'files/:id',
     component: FilePageManagerComponent,
-    // resolve: {
-    //   files: FilesResolver
-    // }
+    resolve: {
+      files: FilesResolver
+    }
   },
   {
     path: 'settings',
@@ -49,7 +54,21 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [FileDefundComponent, FileDefundListComponent, FileFundloadComponent, FileFundListComponent, FileListPageComponent, FilePageComponent, FilePageManagerComponent, SettingsComponent],
+  declarations: [
+    FileDefundComponent, 
+    FileDefundListComponent, 
+    FileFundloadComponent, 
+    FileFundListComponent, 
+    FileListPageComponent, 
+    FilePageComponent, 
+    FilePageManagerComponent, 
+    SettingsComponent,
+    SettingsCifComponent, 
+    SettingsPaymentFileComponent, 
+    SettingsAmlockComponent, 
+    SettingsFimiComponent,
+     SettingsFlexcubeComponent,
+  ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),

@@ -117,7 +117,7 @@
                                 <div class="col-start-5"> {{file.priority}}</div>
                                 <div class="col-start-6 col-end-7"> {{file.batchNumber}}</div>
                                 <div class="col-start-8 "> {{file.date | date }}</div>
-                                <div class="col-start-10"> <a [routerLink]="['/file-manager/files',file.id]"
+                                <div class="col-start-10"> <a (click) = "ViewFileDetails(file)"
                                         *ngIf="(file.status !== 'Loading')">
                                         <mat-icon svgIcon="heroicons_outline:pencil-alt"></mat-icon>
                                         View
