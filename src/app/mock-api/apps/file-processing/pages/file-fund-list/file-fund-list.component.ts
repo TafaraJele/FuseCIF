@@ -9,6 +9,9 @@ import { selectFiles } from '../../store/selectors/files.selector';
 import { PageEvent } from '@angular/material/paginator';
 import { FormControl } from '@angular/forms';
 
+import { Router } from '@angular/router';
+import { FilePageManagerComponent } from '../file-page-manager/file-page-manager.component';
+
 @Component({
   selector: 'app-file-fund-list',
   templateUrl: './file-fund-list.component.html',
@@ -38,7 +41,7 @@ export class FileFundListComponent implements OnInit {
   sortName: string | null = null
   sortValue: string | null = null
   constructor(private store: Store<AppState>,
-    private service: FileService) {
+    private service: FileService, private router: Router, private fileManager: FilePageManagerComponent) {
   }
 
   ngOnInit(): void {
@@ -116,6 +119,14 @@ export class FileFundListComponent implements OnInit {
     }
     this.approvedPageSlice = this.approvedFiles.slice(startIndex, endIndex)
     this.receivedPageSlice = this.receivedFiles.slice(startIndex, endIndex)
+
+  }
+  ViewFileDetails(file):any{
+    debugger
+    this.service.changeMessage(file)
+    var fileManagers = new FilePageManagerComponent(this.service)
+    fileManagers.ngOnInit()
+    this.router.navigate(['/file-manager/files',file.id]);
 
   }
   viewApproved(){

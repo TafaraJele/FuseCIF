@@ -8,6 +8,8 @@ import { FileMetadata } from 'app/shared/models/filemetadata.model';
 import { AppState } from 'app/mock-api/store';
 import { PageEvent } from '@angular/material/paginator';
 import { FormControl } from '@angular/forms';
+import { FilePageManagerComponent } from '../file-page-manager/file-page-manager.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-file-defund-list',
@@ -38,7 +40,7 @@ export class FileDefundListComponent implements OnInit {
   sortName: string | null = null
   sortValue: string | null = null
   constructor(private store: Store<AppState>,
-    private service: FileService) {
+    private service: FileService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -104,6 +106,14 @@ export class FileDefundListComponent implements OnInit {
     } else {
       this.filteredFiles = this.files
     }
+  }
+  ViewFileDetails(file):any{
+    debugger
+    this.service.changeMessage(file)
+    var fileManagers = new FilePageManagerComponent(this.service)
+    fileManagers.ngOnInit()
+    this.router.navigate(['/file-manager/files',file.id]);
+
   }
   viewApproved(){
     this.filteredFiles = this.approvedFiles

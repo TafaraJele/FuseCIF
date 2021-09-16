@@ -34,22 +34,21 @@
         <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
             <ng-container>
                 <mat-tab-group class="mt-4">
-                    <mat-tab label="Success">
+                    <mat-tab label="Success" class="border-indigo-100">
                         <mat-card id='cover-card' class='bg-indigo-200'>
                             <div class="grid grid-cols-12 gap-1">
-                                <div class="col-start-1 col-end-4"> Name </div>
-                                <div class="col-start-5 "> Surname</div>
-                                <div class="col-start-6 col-end-7">National ID</div>
-                                <div class="col-start-8 "> Account Number</div>
-                                <div class="col-start-10">Employee Code </div>
-                                <div class="col-start-11"> Prospect ID</div>
+                                <div class="col-start-1 col-end-2"> Name </div>
+                                <div class="col-start-3 col-end-4"> Surname</div>
+                                <div class="col-start-5 col-end-6">National ID</div>
+                                <div class="col-start-7 "> Account No.#</div>
+                                <div class="col-start-9"> Prospect ID</div>
                                 <div class="col-start-12">Status</div>
                             </div>
                         </mat-card>
 
                         <mat-card id='cover-card' *ngFor='let file of successPageSlice' class="my-2">
                             <div class="grid grid-cols-12 gap-1 ">
-                                <div class="col-start-1 col-end-4">
+                                <div class="col-start-1 col-end-2">
 
                                     <div class="flex flex-row ...">
 
@@ -58,12 +57,10 @@
                                     </div>
 
                                 </div>
-                                <div class="col-start-5"> {{file.lastName}}</div>
-                                <div class="col-start-6 col-end-7"> {{file.customerIDNumber}}</div>
-                                <div class="col-start-8 "> {{ getAccountNumber(file.id)}}</div>
-                                <div class="col-start-10">{{file.employeeCode}}
-                                </div>
-                                <div class="col-start-11">
+                                <div class="col-start-3 col-end-4"> {{file.lastName}}</div>
+                                <div class="col-start-5 col-end-6"> {{file.customerIDNumber}}</div>
+                                <div class="col-start-7"> {{ getAccountNumber(file.id)}}</div>
+                                <div class="col-start-9">
                                     {{file.prospectId}}
                                 </div>
                                 <div class="col-start-12">
@@ -90,12 +87,11 @@
                     <mat-tab label="Errors">
                         <mat-card id='cover-card' class='bg-indigo-200'>
                             <div class="grid grid-cols-12 gap-1">
-                                <div class="col-start-1 col-end-4"> Name </div>
-                                <div class="col-start-5 "> Surname</div>
-                                <div class="col-start-6 col-end-7">National ID</div>
-                                <div class="col-start-8 "> Account Number</div>
-                                <div class="col-start-10">Employee Code </div>
-                                <div class="col-start-11"> Prospect ID</div>
+                                <div class="col-start-1 col-end-2"> Name </div>
+                                <div class="col-start-3 col-end-4"> Surname</div>
+                                <div class="col-start-5 col-end-6">National ID</div>
+                                <div class="col-start-7 "> Account No.#</div>
+                                <div class="col-start-9"> Prospect ID</div>
                                 <div class="col-start-12">Status</div>
                             </div>
                         </mat-card>
@@ -111,12 +107,12 @@
                                     </div>
 
                                 </div>
-                                <div class="col-start-5"> {{file.lastName}}</div>
-                                <div class="col-start-6 col-end-7"> {{file.customerIDNumber}}</div>
-                                <div class="col-start-8 "> {{ getAccountNumber(file.id)}}</div>
-                                <div class="col-start-10">{{file.employeeCode}}
+                                <div class="col-start-3 col-end-4"> {{file.lastName}}</div>
+                                <div class="col-start-5 col-end-6"> {{file.customerIDNumber}}</div>
+                                <div class="col-start-7"> {{ getAccountNumber(file.id)}}</div>
+                                <div class="col-start-9">{{file.employeeCode}}
                                 </div>
-                                <div class="col-start-11">
+                                <div class="col-start-12">
                                     {{file.prospectId}}
                                 </div>
                                 <div class="col-start-12">
@@ -143,19 +139,18 @@
                     <mat-tab label="Match">
                         <mat-card id='cover-card' class='bg-indigo-200'>
                             <div class="grid grid-cols-12 gap-1">
-                                <div class="col-start-1 col-end-4"> Name </div>
-                                <div class="col-start-5 "> Surname</div>
-                                <div class="col-start-6 col-end-7">National ID</div>
-                                <div class="col-start-8 "> Account Number</div>
-                                <div class="col-start-10">Employee Code </div>
-                                <div class="col-start-11"> Prospect ID</div>
+                                <div class="col-start-1 col-end-2"> Name </div>
+                                <div class="col-start-3 col-end-4"> Surname</div>
+                                <div class="col-start-5 col-end-6">National ID</div>
+                                <div class="col-start-7 "> Account No.#</div>
+                                <div class="col-start-9"> Prospect ID</div>
                                 <div class="col-start-12">Status</div>
                             </div>
                         </mat-card>
 
                         <mat-card id='cover-card' *ngFor='let file of rejectedPageSlice' class="my-2">
                             <div class="grid grid-cols-12 gap-1 ">
-                                <div class="col-start-1 col-end-4">
+                                <div class="col-start-1 col-end-2">
 
                                     <div class="flex flex-row ...">
 
@@ -164,12 +159,10 @@
                                     </div>
 
                                 </div>
-                                <div class="col-start-5"> {{file.lastName}}</div>
-                                <div class="col-start-6 col-end-7"> {{file.customerIDNumber}}</div>
-                                <div class="col-start-8 "> {{ getAccountNumber(file.id)}}</div>
-                                <div class="col-start-10">{{file.employeeCode}}
-                                </div>
-                                <div class="col-start-11">
+                                <div class="col-start-3 col-end-4"> {{file.lastName}}</div>
+                                <div class="col-start-5 col-end-6"> {{file.customerIDNumber}}</div>
+                                <div class="col-start-7"> {{ getAccountNumber(file.id)}}</div>
+                                <div class="col-start-9">
                                     {{file.prospectId}}
                                 </div>
                                 <div class="col-start-12">
@@ -196,19 +189,18 @@
                     <mat-tab label="Rejected">
                         <mat-card id='cover-card' class='bg-indigo-200'>
                             <div class="grid grid-cols-12 gap-1">
-                                <div class="col-start-1 col-end-4"> Name </div>
-                                <div class="col-start-5 "> Surname</div>
-                                <div class="col-start-6 col-end-7">National ID</div>
-                                <div class="col-start-8 "> Account Number</div>
-                                <div class="col-start-10">Employee Code </div>
-                                <div class="col-start-11"> Prospect ID</div>
+                                <div class="col-start-1 col-end-2"> Name </div>
+                                <div class="col-start-3 col-end-4"> Surname</div>
+                                <div class="col-start-5 col-end-6">National ID</div>
+                                <div class="col-start-7 ">Account No.#</div>
+                                <div class="col-start-9"> Prospect ID</div>
                                 <div class="col-start-12">Status</div>
                             </div>
                         </mat-card>
 
                         <mat-card id='cover-card' *ngFor='let file of amlockRejectedPageSlice' class="my-2">
                             <div class="grid grid-cols-12 gap-1 ">
-                                <div class="col-start-1 col-end-4">
+                                <div class="col-start-1 col-end-2">
 
                                     <div class="flex flex-row ...">
 
@@ -217,12 +209,10 @@
                                     </div>
 
                                 </div>
-                                <div class="col-start-5"> {{file.lastName}}</div>
-                                <div class="col-start-6 col-end-7"> {{file.customerIDNumber}}</div>
-                                <div class="col-start-8 "> {{ getAccountNumber(file.id)}}</div>
-                                <div class="col-start-10">{{file.employeeCode}}
-                                </div>
-                                <div class="col-start-11">
+                                <div class="col-start-3 col-end-4"> {{file.lastName}}</div>
+                                <div class="col-start-5 col-end-6"> {{file.customerIDNumber}}</div>
+                                <div class="col-start-7"> {{ getAccountNumber(file.id)}}</div>
+                                <div class="col-start-9">
                                     {{file.prospectId}}
                                 </div>
                                 <div class="col-start-12">
@@ -248,40 +238,36 @@
                     </mat-tab>
                     <mat-tab label="Card status">
                         <mat-card id='cover-card' class='bg-indigo-200'>
-                            <div class="grid grid-cols-12 gap-1">
-                                <div class="col-start-1 col-end-4"> Employee Code </div>
-                                <div class="col-start-5 "> Account Number</div>
-                                <div class="col-start-6 col-end-7">Card Reference</div>
-                                <div class="col-start-8 "> Charge Fee Debit Status</div>
-                                <div class="col-start-10">Charge Fee Credit Status</div>
-                                <div class="col-start-11"> Prospect ID</div>
-                                <div class="col-start-12">Card Status</div>
+                            <div class="grid grid-cols-12 gap-1">                                
+                                <div class="col-start-1 col-end-2 "> Account No.#</div>
+                                <div class="col-start-3 col-end-4">Card Ref</div>
+                                <div class="col-start-5 col-end-7 "> Charge Fee DR Status</div>
+                                <div class="col-start-8 col-end-10">Charge Fee CR Status</div>                                
+                                <div class="col-start-11">Card Status</div>
                             </div>
 
                         </mat-card>
 
                         <mat-card id='cover-card' *ngFor='let card of filteredCards' class="my-2">
                             <div class="grid grid-cols-12 gap-1 ">
-                                <div class="col-start-1 col-end-4">
+                                <div class="col-start-1 col-end-2">
 
                                     <div class="flex flex-row ...">
 
-                                        <div class="approvedCircle"> </div> {{card.employeeCode}}
+                                        <div class="approvedCircle"> </div> {{card.accountNumber}}
 
                                     </div>
 
                                 </div>
-                                <div class="col-start-5"> {{card.accountNumber}}</div>
-                                <div class="col-start-6 col-end-7"> {{card.reference}}</div>
-                                <div class="col-start-8 "> {{ card.debitStatus}}</div>
-                                <div class="col-start-10">{{card.creditStatus}}
+                                <div class="col-start-3 col-end-4"> {{card.reference}}</div>
+                                <div class="col-start-5 col-end-6"> {{card.debitStatus}}</div>
+                                <div class="col-start-7 "> {{ card.creditStatus}}</div>
+                                <div class="col-start-8">{{card.cardStatus}}
                                 </div>
-                                <div class="col-start-11">
-                                    {{card.cardStatus}}
-                                </div>
-                                <div class="col-start-12">
+                                <div class="col-start-9">
                                     {{card.status}}
                                 </div>
+                                
                             </div>
 
                         </mat-card>

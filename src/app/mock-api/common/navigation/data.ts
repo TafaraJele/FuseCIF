@@ -39,14 +39,14 @@ export const compactNavigation: FuseNavigationItem[] = [
                 id: 'user.management.users',
                 title: 'Fund Requests',
                 type: 'basic',
-                icon: 'heroicons_outline:user-group',
+                icon: 'heroicons_outline:briefcase',
                 link: '/file-manager/funding',
             },
             {
                 id: 'user.management.roles',
                 title: 'Defund Requests',
                 type: 'basic',
-                icon: 'heroicons_outline:bookmark-alt',
+                icon: 'heroicons_outline:currency-dollar',
                 link: '/file-manager/defunding',
             }            
         ],

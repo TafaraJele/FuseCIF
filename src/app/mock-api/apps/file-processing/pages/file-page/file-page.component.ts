@@ -47,10 +47,10 @@ export class FilePageComponent implements OnInit {
   listOfSearchName: string[] = []
   listOfSearchAddress: string[] = []
   successPageSlice: any
-    errorPageSlice: any
-    rejectedPageSlice: any
-    searchInputControl: FormControl = new FormControl();
- amlockRejectedPageSlice: any 
+  errorPageSlice: any
+  rejectedPageSlice: any
+  searchInputControl: FormControl = new FormControl();
+  amlockRejectedPageSlice: any
   activeKey = 0
   mapOfSort: { [key: string]: any } = {
     file: null,
@@ -64,9 +64,9 @@ export class FilePageComponent implements OnInit {
   constructor(private activatedroute: ActivatedRoute,
     private service: FileService,
     private store: Store<AppState>,
- 
+
     private router: Router) {
-      
+
 
     this.activatedroute.params.subscribe(
       params => {
@@ -83,14 +83,7 @@ export class FilePageComponent implements OnInit {
 
   ngOnInit(): void {
 
-   this.GetCustomers()
-   debugger
-   this.successPageSlice = this.successfulCustomers.slice(0, 5)
-   this.errorPageSlice = this.errorsCustomers.slice(0, 5)
-   this.rejectedPageSlice = this.rejectedCustomers.slice(0, 5)
-   this.amlockRejectedPageSlice = this.amlockRejectedCustomers.slice(0, 5)
-
-
+    this.GetCustomers()
     this.loadFile()
     this.loadAccounts()
     this.loadCards()
@@ -109,7 +102,7 @@ export class FilePageComponent implements OnInit {
     this.activeKey = key
   }
   OnPageChange(event: PageEvent) {
-    
+
     const startIndex = event.pageIndex * event.pageSize;
 
     let endIndex = startIndex + event.pageSize;
@@ -258,7 +251,7 @@ export class FilePageComponent implements OnInit {
     this.showResubmit = false
     this.activeKey = 0
     this.GetCustomers()
-    this.filteredCustomers = this.successfulCustomers    
+    this.filteredCustomers = this.successfulCustomers
 
   }
 
@@ -299,8 +292,8 @@ export class FilePageComponent implements OnInit {
       }
     })
   }
-  GetCustomers(): any{
-    this.service.loadFileAccounts(this.file.batchNumber).subscribe(customers => {  
+  GetCustomers(): any {
+    this.service.loadFileAccounts(this.file.batchNumber).subscribe(customers => {
       if (customers) {
 
         this.customers = customers
@@ -309,8 +302,13 @@ export class FilePageComponent implements OnInit {
           this.successfulCustomers = this.customers.filter(c => c.status === 'Approved' || c.status === 'Received')
           this.errorsCustomers = this.customers.filter(c => c.status === 'Error')
           this.rejectedCustomers = this.customers.filter(c => c.status === 'Rejected')
-          this.amlockRejectedCustomers = this.customers.filter(c => c.status === 'AmlockRejected')     
+          this.amlockRejectedCustomers = this.customers.filter(c => c.status === 'AmlockRejected')
         }
+
+        this.successPageSlice = this.successfulCustomers.slice(0, 5)
+        this.errorPageSlice = this.errorsCustomers.slice(0, 5)
+        this.rejectedPageSlice = this.rejectedCustomers.slice(0, 5)
+        this.amlockRejectedPageSlice = this.amlockRejectedCustomers.slice(0, 5)
       }
 
     })
