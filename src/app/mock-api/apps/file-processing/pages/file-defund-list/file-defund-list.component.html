@@ -20,10 +20,35 @@
                     [placeholder]="'Search card requests'">
             </mat-form-field>
             <!-- Add product button -->
-            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="exportToCsv('Approved')">
+            <!-- Download button -->
+            <button class="ml-4" mat-flat-button [color]="'primary'" [matMenuTriggerFor]="currentStatementMenu" >
                 <mat-icon [svgIcon]="'heroicons_outline:download'"></mat-icon>
                 <span class="ml-2 mr-1">DownLoad</span>
             </button>
+            <mat-menu #currentStatementMenu="matMenu">
+                <button mat-menu-item (click)="exportToCsv(undefined)">
+                    <span class="flex items-center">
+                        
+                        <span>All</span>
+                    </span>
+                </button>
+                <mat-divider class="my-2"></mat-divider>
+                <button mat-menu-item (click)="exportToCsv('Approved')">
+                    <span class="flex items-center">
+                        
+                        <span>Approved</span>
+                    </span>
+                </button>               
+               
+                <mat-divider class="my-2"></mat-divider>
+                <button mat-menu-item  (click)="exportToCsv('Received')">
+                    <span class="flex items-center">                        
+                        <span>Received</span>
+                    </span>
+                </button>
+                <mat-divider class="my-2"></mat-divider>               
+                
+            </mat-menu>
         </div>
     </div>
 
@@ -41,7 +66,7 @@
                                 <div class="col-start-5 "> Priority</div>
                                 <div class="col-start-6 col-end-7"> Batch No.#</div>
                                 <div class="col-start-8 col-end-10 "> Uploaded Date</div>
-                                <div class="col-start-11"></div>
+                                <div class="col-start-10">Status</div>
                                 <div class="col-start-12"></div>
                             </div>
                         </mat-card>
@@ -60,18 +85,21 @@
                                 <div class="col-start-5"> {{file.priority}}</div>
                                 <div class="col-start-6 col-end-7"> {{file.batchNumber}}</div>
                                 <div class="col-start-8 "> {{file.date | date }}</div>
-                                <div class="col-start-10"> <a (click) = "ViewFileDetails(file)"
+                                <div class="col-start-10"> 
+                                    <span
+                                        class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                                        [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': file.status === 'Rejected',
+                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': file.status === 'Approved',
+                                            'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':file.status === 'Received'
+                                        }">
+                                        <span class="leading-relaxed whitespace-nowrap"> {{file.status}}</span>
+                                    </span>
+                                </div>
+                                <div class="col-start-12">
+                                    <a (click)="ViewFileDetails(file)"
                                         *ngIf="(file.status !== 'Loading')">
                                         <mat-icon svgIcon="heroicons_outline:pencil-alt"></mat-icon>
                                         View
-                                    </a>
-                                </div>
-                                <div class="col-start-11">
-                                    <a (click)="onApprove(file)"
-                                        *ngIf="(file.status === 'Received')||(file.status === 'AmlockError')" 
-                                        >
-                                        <mat-icon svgIcon="heroicons_outline:check"></mat-icon>
-                                        Approve
                                     </a>
                                 </div>
                             </div>
@@ -79,16 +107,16 @@
                         </mat-card>
 
 
-                        <mat-card id='cover-card' *ngIf="files == undefined">
-                            <div class="loading-data"> Loading data... </div>
+                        <mat-card  class="loading-data my-2" id='cover-card' *ngIf="approvedFiles == undefined">
+                            Loading data... 
+                       </mat-card>
+                       <mat-card class="loading-data my-2" id='cover-card' *ngIf="approvedFiles != undefined && approvedFiles.length == 0">
+                           No approved files...
+                       </mat-card>
+                       <mat-paginator *ngIf="approvedFiles.length > 0" [length]="approvedFiles.length" [pageSize]="5"
+                           [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
+                       </mat-paginator>
 
-                        </mat-card>
-                        <mat-card class="loading-data" id='cover-card' *ngIf="files != undefined && files.length == 0">
-                            No data...
-                        </mat-card>
-                        <mat-paginator *ngIf="files.length > 0" [length]="this.files.length" [pageSize]="5"
-                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
-                        </mat-paginator>
 
                     </mat-tab>
                     <mat-tab label="Received" >
@@ -98,7 +126,7 @@
                                 <div class="col-start-5 "> Priority</div>
                                 <div class="col-start-6 col-end-7"> Batch No.#</div>
                                 <div class="col-start-8 col-end-10 "> Uploaded Date</div>
-                                <div class="col-start-11"></div>
+                                <div class="col-start-10">Status</div>
                                 <div class="col-start-12"></div>
                             </div>
                         </mat-card>
@@ -117,18 +145,21 @@
                                 <div class="col-start-5"> {{file.priority}}</div>
                                 <div class="col-start-6 col-end-7"> {{file.batchNumber}}</div>
                                 <div class="col-start-8 "> {{file.date | date }}</div>
-                                <div class="col-start-10"> <a (click) = "ViewFileDetails(file)"
+                                <div class="col-start-10"> 
+                                    <span
+                                        class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                                        [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': file.status === 'Rejected',
+                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': file.status === 'Approved',
+                                            'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':file.status === 'Received'
+                                        }">
+                                        <span class="leading-relaxed whitespace-nowrap"> {{file.status}}</span>
+                                    </span>
+                                </div>
+                                <div class="col-start-12">
+                                    <a (click)="ViewFileDetails(file)"
                                         *ngIf="(file.status !== 'Loading')">
                                         <mat-icon svgIcon="heroicons_outline:pencil-alt"></mat-icon>
                                         View
-                                    </a>
-                                </div>
-                                <div class="col-start-11">
-                                    <a (click)="onApprove(file)"
-                                        *ngIf="(file.status === 'Received')||(file.status === 'AmlockError')" 
-                                        >
-                                        <mat-icon svgIcon="heroicons_outline:check"></mat-icon>
-                                        Approve
                                     </a>
                                 </div>
                             </div>
@@ -136,16 +167,15 @@
                         </mat-card>
 
 
-                        <mat-card id='cover-card' *ngIf="files == undefined">
-                            <div class="loading-data"> Loading data... </div>
-
-                        </mat-card>
-                        <mat-card class="loading-data" id='cover-card' *ngIf="files != undefined && files.length == 0">
-                            No data...
-                        </mat-card>
-                        <mat-paginator *ngIf="files.length > 0" [length]="this.files.length" [pageSize]="5"
-                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
-                        </mat-paginator>
+                        <mat-card class="loading-data my-2" id='cover-card' *ngIf="files == undefined">
+                            Loading data... 
+                       </mat-card>
+                       <mat-card class="loading-data my-2" id='cover-card' *ngIf="receivedFiles != undefined && receivedFiles.length == 0">
+                           No received files...
+                       </mat-card>
+                       <mat-paginator *ngIf="receivedFiles.length > 0" [length]="receivedFiles.length" [pageSize]="5"
+                           [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
+                       </mat-paginator>
 
                     </mat-tab>
 

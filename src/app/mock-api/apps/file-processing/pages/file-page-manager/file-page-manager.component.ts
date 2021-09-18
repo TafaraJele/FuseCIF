@@ -19,20 +19,10 @@ export class FilePageManagerComponent implements OnInit {
 
   }
   
-  // constructor(private activatedroute: ActivatedRoute,  private store: Store<AppState>) {
-  //   this.activatedroute.params.subscribe(
-  //     params => {
-  //       this.fileId = params['id']        
-  //     }
-  //   )
-  //  }
-
   ngOnInit(): void {
  
     this.service.currentMessage.subscribe(file => this.file = file)
-  //   this.store.pipe(select(selectFile(this.fileId))).subscribe(file => {
-  //     this.file = file
-  //   });
+  
   }
 
 }

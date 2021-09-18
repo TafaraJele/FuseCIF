@@ -19,11 +19,44 @@
                 <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
                     [placeholder]="'Search card requests'">
             </mat-form-field>
-            <!-- Add product button -->
-            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="exportToCsv('Approved')">
+             <!-- Approve button -->
+             <button *ngIf='showApprove' class="ml-4 bg-green-200" mat-flat-button (click)="onApprove()">
+                <mat-icon [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                <span class="ml-2 mr-1">Approve</span>
+            </button>
+            <!-- Resubmit button -->
+            <button *ngIf="showResubmit" class="ml-4 bg-green-200" mat-flat-button (click)="onResubmit()">
+                <mat-icon [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                <span class="ml-2 mr-1">Resubmit</span>
+            </button>
+            <!-- Download button -->
+            <button class="ml-4" mat-flat-button [color]="'primary'" [matMenuTriggerFor]="currentStatementMenu">
                 <mat-icon [svgIcon]="'heroicons_outline:download'"></mat-icon>
                 <span class="ml-2 mr-1">DownLoad</span>
             </button>
+            <mat-menu #currentStatementMenu="matMenu">
+                <button mat-menu-item (click)="exportToCsv(undefined)">
+                    <span class="flex items-center">
+
+                        <span>All</span>
+                    </span>
+                </button>
+                <mat-divider class="my-2"></mat-divider>
+                <button mat-menu-item (click)="exportToCsv('ChargeSuccess')">
+                    <span class="flex items-center">
+                        <span>Success</span>
+                    </span>
+                </button>
+
+                <mat-divider class="my-2"></mat-divider>
+                <button mat-menu-item (click)="exportToCsv('Error')">
+                    <span class="flex items-center">
+                        <span>Failure</span>
+                    </span>
+                </button>
+                <mat-divider class="my-2"></mat-divider>
+
+            </mat-menu>
         </div>
     </div>
 
@@ -74,7 +107,6 @@
                                             'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.creditStatus === 'Success'}">
                                         <span class="leading-relaxed whitespace-nowrap">{{request.creditStatus}}</span>
                                     </span>
-
                                 </div>
                                 <div class="col-start-12">
                                     <span
@@ -90,15 +122,14 @@
                         </mat-card>
 
 
-                        <mat-card id='cover-card' *ngIf="defundrequests == undefined">
-                            <div class="loading-data"> Loading data... </div>
-
+                        <mat-card class="loading-data my-2" id='cover-card' *ngIf="successfulDefundRequests == undefined">
+                            Loading data... 
                         </mat-card>
-                        <mat-card class="loading-data" id='cover-card'
-                            *ngIf="defundrequests != undefined && defundrequests.length == 0">
-                            No data...
+                        <mat-card class="loading-data my-2" id='cover-card'
+                            *ngIf="successfulDefundRequests != undefined && successfulDefundRequests.length == 0">
+                            No error defund requests...
                         </mat-card>
-                        <mat-paginator *ngIf="defundrequests.length > 0" [length]="defundrequests.length" [pageSize]="5"
+                        <mat-paginator *ngIf="successfulDefundRequests.length > 0" [length]="successfulDefundRequests.length" [pageSize]="5"
                             [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
                         </mat-paginator>
 
@@ -140,15 +171,14 @@
                         </mat-card>
 
 
-                        <mat-card id='cover-card' *ngIf="defundrequests == undefined">
-                            <div class="loading-data"> Loading data... </div>
-
+                        <mat-card class="loading-data my-2" id='cover-card' *ngIf="errorsDefundRequests == undefined">
+                            Loading data... 
                         </mat-card>
-                        <mat-card class="loading-data" id='cover-card'
-                            *ngIf="defundrequests != undefined && defundrequests.length == 0">
-                            No data...
+                        <mat-card class="loading-data my-2" id='cover-card'
+                            *ngIf="errorsDefundRequests != undefined && errorsDefundRequests.length == 0">
+                            No error defund requests...
                         </mat-card>
-                        <mat-paginator *ngIf="defundrequests.length > 0" [length]="defundrequests.length" [pageSize]="5"
+                        <mat-paginator *ngIf="errorsDefundRequests.length > 0" [length]="errorsDefundRequests.length" [pageSize]="5"
                             [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
                         </mat-paginator>
 

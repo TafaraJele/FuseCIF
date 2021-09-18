@@ -108,7 +108,7 @@ export class FileDefundListComponent implements OnInit {
     }
   }
   ViewFileDetails(file):any{
-    debugger
+   
     this.service.changeMessage(file)
     var fileManagers = new FilePageManagerComponent(this.service)
     fileManagers.ngOnInit()

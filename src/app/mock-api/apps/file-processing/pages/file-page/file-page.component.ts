@@ -10,6 +10,7 @@ import { Account } from 'app/shared/models/account.model'
 import { Card } from 'app/shared/models/card.model'
 import { Customer } from 'app/shared/models/customer.model'
 import { FileMetadata } from 'app/shared/models/filemetadata.model'
+import { NotificationsService } from 'app/shared/notifications/notifications.service'
 
 import { FileService } from '../../services/files.service'
 import { loadBatchCustomers } from '../../store/actions/customers.actions'
@@ -49,9 +50,11 @@ export class FilePageComponent implements OnInit {
   successPageSlice: any
   errorPageSlice: any
   rejectedPageSlice: any
+  cardsPageSlice: any
   searchInputControl: FormControl = new FormControl();
   amlockRejectedPageSlice: any
   activeKey = 0
+  showApprove: boolean
   mapOfSort: { [key: string]: any } = {
     file: null,
     batchNumber: null,
@@ -61,31 +64,21 @@ export class FilePageComponent implements OnInit {
   }
   sortName: string | null = null
   sortValue: string | null = null
-  constructor(private activatedroute: ActivatedRoute,
+  constructor(
     private service: FileService,
-    private store: Store<AppState>,
+    private notifyService : NotificationsService) {
 
-    private router: Router) {
-
-
-    this.activatedroute.params.subscribe(
-      params => {
-        this.fileId = params['id']
-        this.loadFile()
-        if (this.file) {
-          this.store.dispatch(loadFileAccounts({ fileBatchNumber: this.file.batchNumber }))
-          this.store.dispatch(loadFileCards({ fileBatchNumber: this.file.batchNumber }))
-        }
-      }
-    )
+    
   }
 
 
   ngOnInit(): void {
-
-    this.GetCustomers()
-    this.loadFile()
-    this.loadAccounts()
+    
+    if(this.file.status == 'Received')
+    {
+      this.showApprove = true
+    }
+    this.GetCustomers()    
     this.loadCards()
   }
   sort(sortName: string, value: string): void {
@@ -113,55 +106,14 @@ export class FilePageComponent implements OnInit {
     this.errorPageSlice = this.errorsCustomers.slice(startIndex, endIndex)
     this.rejectedPageSlice = this.rejectedCustomers.slice(startIndex, endIndex)
     this.amlockRejectedPageSlice = this.amlockRejectedCustomers.slice(startIndex, endIndex)
+    this.cardsPageSlice = this.cards.slice(startIndex, endIndex)
 
-  }
-  loadCustomers(): any {
-
-    this.store.dispatch(loadBatchCustomers(this.file.batchNumber))
-
-    if (this.file) {
-
-      this.store.pipe(select(selectBatchCustomers(this.file.batchNumber))).subscribe(customers => {
-
-        this.customers = customers
-        if (this.customers && this.customers.length > 0) {
-          this.successfulCustomers = this.customers.filter(c => c.status === 'Approved' || c.status === 'Received')
-          this.errorsCustomers = this.customers.filter(c => c.status === 'Error')
-          this.rejectedCustomers = this.customers.filter(c => c.status === 'Rejected')
-          this.amlockRejectedCustomers = this.customers.filter(c => c.status === 'AmlockRejected')
-          this.filteredCustomers = this.successfulCustomers
-        }
-      })
-    }
-  }
-  loadAccounts(): any {
-    if (this.file) {
-      this.store.pipe(select(selectFileAccounts(this.file.batchNumber))).subscribe(accounts => {
-
-        if (accounts) {
-          this.accounts = accounts
-        }
-      })
-    }
-  }
-
-  loadFile(): any {
-    if (this.fileId) {
-      this.store.pipe(select(selectFile(this.fileId))).subscribe(file => {
-
-        if (file) {
-          this.file = file
-          this.loadCustomers()
-        }
-      })
-    }
-  }
+  }  
+  
   loadCards(): any {
 
     if (this.file) {
-
-      //this.store.dispatch(loadFileCards({ fileBatchNumber: this.file.batchNumber }))
-      // this.store.pipe(select(selectFileCards(this.file.batchNumber))).subscribe(cards => {
+      
       this.service.loadFileCards(this.file.batchNumber).subscribe(cards => {
 
         if (cards) {
@@ -172,6 +124,7 @@ export class FilePageComponent implements OnInit {
             this.cardChargeCreditError = this.cards.filter(c => c.creditStatus == "Error")
             this.cardRequestFailed = this.cards.filter(c => c.cardStatus == "RequestFailed")
           }
+          this.cardsPageSlice = this.cards.slice(0,5)
 
         }
       })
@@ -203,24 +156,7 @@ export class FilePageComponent implements OnInit {
       this.filteredCustomers = this.customers
     }
   }
-
-  getAccountNumber(id): any {
-    if (id && this.accounts) {
-      const customer = this.customers.find(account => account.id === id)
-      const acc = this.accounts.find(account => account.customerId === customer.customerId)
-      if (acc) {
-        return acc.accountNumber
-      }
-    }
-  }
-  getCustomerMatch(id): any {
-    if (id && this.accounts) {
-      const customer = this.customers.find(account => account.id === id)
-      if (customer) { return customer.match }
-    } else {
-      return 'No match found'
-    }
-  }
+  
   viewErrors(): any {
 
     this.activeKey = 1
@@ -229,21 +165,15 @@ export class FilePageComponent implements OnInit {
     this.GetCustomers()
     this.filteredCustomers = this.errorsCustomers
 
-    if (this.errorsCustomers.length > 0) {
-      this.showResubmit = true
-
-    }
   }
-  viewMatchs(): any {
+  viewMatchs() {
+    debugger
     this.showResubmitCard = false
     this.showResubmit = false
     this.activeKey = 2
     this.GetCustomers()
     this.filteredCustomers = this.rejectedCustomers
-    if (this.rejectedCustomers.length > 0) {
-      this.showResubmit = true
-
-    }
+    
   }
   viewSuccess(): any {
 
@@ -284,11 +214,7 @@ export class FilePageComponent implements OnInit {
         else {
           this.showResubmitCard = false
         }
-
-        if (this.cardChargeDebitError.length > 0 || this.cardChargeCreditError.length > 0 || this.cardRequestFailed.length > 0) {
-          this.showResubmitCard = true
-
-        }
+        
       }
     })
   }
@@ -304,6 +230,7 @@ export class FilePageComponent implements OnInit {
           this.rejectedCustomers = this.customers.filter(c => c.status === 'Rejected')
           this.amlockRejectedCustomers = this.customers.filter(c => c.status === 'AmlockRejected')
         }
+        debugger
 
         this.successPageSlice = this.successfulCustomers.slice(0, 5)
         this.errorPageSlice = this.errorsCustomers.slice(0, 5)
@@ -315,18 +242,26 @@ export class FilePageComponent implements OnInit {
 
 
   }
-  onResubmit(): any {
+ 
+  onApprove() {
+    this.showApprove = false
+     this.notifyService.showNotification('File is being approved. Please wait!!!','OK') 
 
-    const metadata = { ...this.file }
-    this.showMsg = true
+    // this.service.approveFile(this.file).subscribe(file =>{
+    //   this.file = file
+    //   if(file){
+    //     this.GetCustomers()
+    //     this.loadCards()
+    //   }
+    //   if(file.status =="Received")
+    //   {
+    //     this.showApprove = true
+    //   }
 
-    if (this.file.batchNumber) {
-      this.store.dispatch(reApproveFile({ file: metadata }))
-    }
-    setTimeout(() => {
-      this.showMsg = false
-    }, 2000)
-  }
+    // })
+
+    }    
+  
   onResubmitChargeFee(): any {
 
     const metadata = { ...this.file }

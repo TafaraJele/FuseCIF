@@ -26,12 +26,13 @@ export class FileFundloadComponent implements OnInit {
   listOfSearchName: string[] = []
   listOfSearchAddress: string[] = []
   fileId: any
-  message : string
+  message: string
   showResubmit = false
   activeKey = 0
   showMsg = false
   successPageSlice: any
-  errorPageSlice: any 
+  errorPageSlice: any
+  showApprove: boolean 
 
   mapOfSort: { [key: string]: any } = {
     file: null,
@@ -48,18 +49,16 @@ export class FileFundloadComponent implements OnInit {
 
   constructor(private store: Store<AppState>,
     private service: FileService,
-    private activatedroute: ActivatedRoute,
-    
-    private router: Router, ) {
+    private router: Router,) {
 
-    
-        if (this.file) {
-           this.refreshSuccessFundRequests()
-           this.refreshErrorFundRequests()       
-        }
-        this.message = ""
-      
-    
+
+    if (this.file) {
+      this.refreshSuccessFundRequests()
+      this.refreshErrorFundRequests()
+    }
+    this.message = ""
+
+
   }
   ngOnChanges(changes: SimpleChanges): void {
 
@@ -68,18 +67,20 @@ export class FileFundloadComponent implements OnInit {
 
       if (this.file) {
         this.batchNumber = this.file.batchNumber;
-       
+
       }
     }
-    
+
   }
 
   ngOnInit(): void {
-   
-    this.showMsg = false  
-    this.refreshSuccessFundRequests()   
+
+    this.showMsg = false
+    this.refreshSuccessFundRequests()
     this.refreshErrorFundRequests()
-   
+    if(this.file.status == "Received"){
+      this.showApprove = true
+    }
 
   }
   sort(sortName: string, value: string): void {
@@ -119,7 +120,7 @@ export class FileFundloadComponent implements OnInit {
   }
 
   OnPageChange(event: PageEvent) {
-    
+
     const startIndex = event.pageIndex * event.pageSize;
 
     let endIndex = startIndex + event.pageSize;
@@ -128,18 +129,18 @@ export class FileFundloadComponent implements OnInit {
     }
     this.successPageSlice = this.successfulFundRequests.slice(startIndex, endIndex)
     this.errorPageSlice = this.errorsFundRequests.slice(startIndex, endIndex)
-    
+
   }
 
-  refreshSuccessFundRequests(){
+  refreshSuccessFundRequests() {
     this.service.loadFileFundRequests(this.file.batchNumber).subscribe(fundrequests => {
 
       this.fundrequests = fundrequests
 
       if (this.fundrequests && this.fundrequests.length > 0) {
         this.successfulFundRequests = this.fundrequests.filter(c => c.status === "ChargeSuccess" || c.status === "Received")
-        this.errorsFundRequests = this.fundrequests.filter(c => c.status === "Error") 
-        
+        this.errorsFundRequests = this.fundrequests.filter(c => c.status === "Error")
+
       }
       this.filteredFundRequests = this.successfulFundRequests
       this.successPageSlice = this.successfulFundRequests.slice(0, 5)
@@ -148,15 +149,15 @@ export class FileFundloadComponent implements OnInit {
     })
 
   }
-  refreshErrorFundRequests(){
+  refreshErrorFundRequests() {
     this.service.loadFileFundRequests(this.file.batchNumber).subscribe(fundrequests => {
 
       this.fundrequests = fundrequests
 
       if (this.fundrequests && this.fundrequests.length > 0) {
         this.successfulFundRequests = this.fundrequests.filter(c => c.status === "ChargeSuccess" || c.status === "Received")
-        this.errorsFundRequests = this.fundrequests.filter(c => c.status === "Error") 
-       
+        this.errorsFundRequests = this.fundrequests.filter(c => c.status === "Error")
+
       }
       this.filteredFundRequests = this.errorsFundRequests
       this.successPageSlice = this.successfulFundRequests.slice(0, 5)
@@ -165,8 +166,21 @@ export class FileFundloadComponent implements OnInit {
     })
 
   }
+  onApprove() {
+    this.showApprove = false
+    this.service.approveFile(this.file).subscribe(file => {
+      this.file = file
+      if (file) {
+       
+      }
+      if (file.status == "Received") {
+        this.showApprove = true
+      }
 
- 
+    })
+
+  }
+
   loadFile(): any {
 
     if (this.fileId) {
@@ -183,23 +197,22 @@ export class FileFundloadComponent implements OnInit {
     this.showMsg = false
     this.showResubmit = false
     this.activeKey = 0
-    this.refreshSuccessFundRequests()   
+    this.refreshSuccessFundRequests()
 
   }
   onResubmit(): any {
-    const metadata = { ...this.file }   
+    const metadata = { ...this.file }
     this.message = "Resubmitting!"
     this.showMsg = true
-   
+
     if (this.file.batchNumber) {
 
-      this.store.dispatch(approveFundOrDefund({ file: metadata }))
-      this.service.approveFundOrDefund(this.file).subscribe( response => {
-       
-        if(response){
-          this.refreshErrorFundRequests() 
+      this.service.approveFundOrDefund(this.file).subscribe(response => {
+
+        if (response) {
+          this.refreshErrorFundRequests()
           if (response.accepted) {
-           
+
             setTimeout(() => {
               this.message = "Submitted!"
               this.showMsg = true
@@ -208,15 +221,15 @@ export class FileFundloadComponent implements OnInit {
           }
 
         }
-        
+
       })
     }
 
   }
   viewErrors(): any {
-  
+
     this.activeKey = 1
-    this.refreshErrorFundRequests()    
+    this.refreshErrorFundRequests()
     if (this.errorsFundRequests.length > 0) {
       this.showResubmit = true
 

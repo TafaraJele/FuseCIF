@@ -32,6 +32,7 @@ export class FileDefundComponent implements OnInit {
   searchInputControl: FormControl = new FormControl()
   successPageSlice: any
   errorPageSlice: any 
+  showApprove:boolean
 
   mapOfSort: { [key: string]: any } = {
     file: null,
@@ -80,6 +81,9 @@ export class FileDefundComponent implements OnInit {
     this.showMsg = false
     this.refreshSuccessDefundRequests()
     this.refreshErrorDefundRequests()
+    if(this.file.status == "Received"){
+      this.showApprove = true
+    }
 
   }
   sort(sortName: string, value: string): void {
@@ -130,11 +134,24 @@ export class FileDefundComponent implements OnInit {
     }
   }
   ViewFileDetails(file):any{
-    debugger
     this.service.changeMessage(file)
     var fileManagers = new FilePageManagerComponent(this.service)
     fileManagers.ngOnInit()
     this.router.navigate(['/file-manager/files',file.id]);
+
+  }
+  onApprove() {
+    this.showApprove = false
+    this.service.approveFile(this.file).subscribe(file => {
+      this.file = file
+      if (file) {
+       
+      }
+      if (file.status == "Received") {
+        this.showApprove = true
+      }
+
+    })
 
   }
   

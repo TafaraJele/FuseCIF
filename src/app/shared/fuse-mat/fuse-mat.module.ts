@@ -27,6 +27,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatGridListModule } from '@angular/material/grid-list';
 import {MatCardModule} from '@angular/material/card';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 
 
@@ -61,7 +62,8 @@ const modules = [
   MatTableModule,
   MatSortModule,
   MatGridListModule,
-  MatCardModule
+  MatCardModule,
+  MatSnackBarModule
 
 ];
 @NgModule({

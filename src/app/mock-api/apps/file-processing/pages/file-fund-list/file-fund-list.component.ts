@@ -122,7 +122,7 @@ export class FileFundListComponent implements OnInit {
 
   }
   ViewFileDetails(file):any{
-    debugger
+ 
     this.service.changeMessage(file)
     var fileManagers = new FilePageManagerComponent(this.service)
     fileManagers.ngOnInit()
@@ -137,53 +137,21 @@ export class FileFundListComponent implements OnInit {
   }
  
   onApprove(file): any {
-    if (file.requestType==='carddefunding') 
-    {
-
-      const metadata = { ...file }
-      metadata.status = 'Approved'
-      this.showMsg = true
-
-      
-      if (file.batchNumber) {
-        const update: Update<FileMetadata> = {
-          id: file.id,
-          changes: metadata
-        }
-        this.store.dispatch(approveFundOrDefund({ file }))
-        this.store.dispatch(loadFileDefundRequests({fileBatchNumber: file.batchNumber}))    
-      }    
-      
-
-    } 
     
+    this.files.forEach((file) => {
+      
+        const metadata = { ...file }
+        metadata.status = 'Loading'  
     
-    else if ( file.requestType === 'cardfunding')
-    {
+    })
+    debugger
+
       const metadata = { ...file }
       metadata.status = 'Approved'
       this.showMsg = true
 
       this.store.dispatch(approveFundOrDefund({ file: metadata }))
       
-
-    }
-    
-    else {
-      const metadata = { ...file }
-      metadata.status = 'Approved'
-      this.showMsg = true
-
-      if (file.batchNumber) {
-        const update: Update<FileMetadata> = {
-          id: file.id,
-          changes: metadata
-        }
-        this.store.dispatch(approveFile({ file: update }))
-    //    this.store.dispatch(loadFileAccounts({ fileBatchNumber: file.batchNumber }))
-      }
-
-    }
     setTimeout(() => {
       this.showMsg = false
     }, 2000)
