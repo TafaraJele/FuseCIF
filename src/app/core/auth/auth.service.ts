@@ -8,6 +8,7 @@ import { AuthService } from '@auth0/auth0-angular';
 import { environment } from 'environments/environment';
 import { Credentials } from 'app/shared/models/indigo-credentials';
 import { user } from 'app/mock-api/common/user/data';
+import { Router } from '@angular/router';
 
 const baseUrl = environment.fileProcessingUrl
 @Injectable()
@@ -21,7 +22,8 @@ export class AppAuthService {
      */
     constructor(
         private _httpClient: HttpClient,
-        private _userService: UserService
+        private _userService: UserService,
+        private _router: Router
     ) {
     }
 
@@ -70,7 +72,8 @@ export class AppAuthService {
     signIn(credentials: Credentials): Observable<any> {
         // Throw error, if the user is already logged in
         if (this._authenticated) {
-            return throwError('User is already logged in.');
+            this._router.navigate(['/dashboard'])
+            return of('User is already logged in.');
         }
         return this._httpClient.post(baseUrl + '/api/authentication/login', credentials).pipe(
             switchMap((response: any) => {

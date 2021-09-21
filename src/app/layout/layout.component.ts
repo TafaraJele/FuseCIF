@@ -23,6 +23,7 @@ export class LayoutComponent implements OnInit, OnDestroy
     scheme: 'dark' | 'light';
     theme: string;
     themes: [string, any][] = [];
+    compact:boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**

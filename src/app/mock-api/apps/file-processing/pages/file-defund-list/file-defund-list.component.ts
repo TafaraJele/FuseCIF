@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./file-defund-list.component.scss']
 })
 export class FileDefundListComponent implements OnInit {
-  files: FileMetadata[]
+  files: FileMetadata[] = []
   isSidebarOpen: boolean
   filteredFiles: FileMetadata[]  = []
   listOfSearchName: string[] = []

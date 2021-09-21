@@ -128,7 +128,7 @@
                         </mat-card>
                         <mat-card class="loading-data my-2" id='cover-card'
                             *ngIf="successfulFundRequests != undefined && successfulFundRequests.length == 0">
-                            No error defund requests...
+                            No error fund requests...
                         </mat-card>
                         <mat-paginator *ngIf="successfulFundRequests.length > 0" [length]="successfulFundRequests.length" [pageSize]="5"
                             [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
@@ -196,7 +196,7 @@
                         </mat-card>
                         <mat-card class="loading-data my-2" id='cover-card'
                             *ngIf="errorsFundRequests != undefined && errorsFundRequests.length == 0">
-                            No error defund requests...
+                            No error fund requests...
                         </mat-card>
                         <mat-paginator *ngIf="errorsFundRequests.length > 0" [length]="errorsFundRequests.length" [pageSize]="5"
                             [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">

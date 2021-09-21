@@ -158,7 +158,7 @@ export class FilePageComponent implements OnInit {
   }
   
   viewErrors(): any {
-
+    
     this.activeKey = 1
     this.showResubmitCard = false
     this.showResubmit = false
@@ -167,7 +167,7 @@ export class FilePageComponent implements OnInit {
 
   }
   viewMatchs() {
-    debugger
+    
     this.showResubmitCard = false
     this.showResubmit = false
     this.activeKey = 2
@@ -176,7 +176,7 @@ export class FilePageComponent implements OnInit {
     
   }
   viewSuccess(): any {
-
+    
     this.showResubmitCard = false
     this.showResubmit = false
     this.activeKey = 0
@@ -186,6 +186,7 @@ export class FilePageComponent implements OnInit {
   }
 
   viewRejected(): any {
+    
     this.showResubmitCard = false
     this.showResubmit = false
     this.activeKey = 3
@@ -230,7 +231,7 @@ export class FilePageComponent implements OnInit {
           this.rejectedCustomers = this.customers.filter(c => c.status === 'Rejected')
           this.amlockRejectedCustomers = this.customers.filter(c => c.status === 'AmlockRejected')
         }
-        debugger
+        
 
         this.successPageSlice = this.successfulCustomers.slice(0, 5)
         this.errorPageSlice = this.errorsCustomers.slice(0, 5)
@@ -248,7 +249,7 @@ export class FilePageComponent implements OnInit {
      this.notifyService.showNotification('notification','File is being approved. Please wait!!!','') 
 
     this.service.approveFile(this.file).subscribe(result =>{
-      debugger
+
       
       if(result.accepted){
         this.file = result.resource        

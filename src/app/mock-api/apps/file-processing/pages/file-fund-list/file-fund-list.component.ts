@@ -144,7 +144,7 @@ export class FileFundListComponent implements OnInit {
         metadata.status = 'Loading'  
     
     })
-    debugger
+    
 
       const metadata = { ...file }
       metadata.status = 'Approved'
