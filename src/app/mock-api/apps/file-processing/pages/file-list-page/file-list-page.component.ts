@@ -22,19 +22,19 @@ import { NotificationsService } from 'app/shared/notifications/notifications.ser
 })
 export class FileListPageComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator
-  files: FileMetadata[]
+  files: FileMetadata[] = [] 
   isSidebarOpen: boolean
   filteredFiles: FileMetadata[]
   listOfSearchName: string[] = []
   listOfSearchAddress: string[] = []
   showMsg: boolean = false
-  approvedFiles: FileMetadata[]
-  receivedFiles: FileMetadata[]
-  errorFiles: FileMetadata[]
+  approvedFiles: FileMetadata[] =[]
+  receivedFiles: FileMetadata[] =[]
+  errorFiles: FileMetadata[] = []
   activeKey = 0
   isDisabled: boolean
-  approvedPageSlice: any
-  receivedPageSlice: any
+  approvedPageSlice: any[] = []
+  receivedPageSlice: any[] = []
   p: any
   opened: boolean;
   searchInputControl: FormControl = new FormControl();

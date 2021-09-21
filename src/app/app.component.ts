@@ -23,19 +23,20 @@ export class AppComponent implements OnInit {
     ) {
     }
     ngOnInit(): void {
-        this.auth.isAuthenticated$.subscribe((authenticated) => {
-            this.authService._authenticated$.next(authenticated);
-            this.router.navigateByUrl('/dashboard');
-        });
-        this.auth.getAccessTokenSilently().subscribe((token) => {
-            if (token) {
-                environment.accessToken = token;
-            }
-        });
-        this.auth.idTokenClaims$.subscribe((token) => {
-            this.authService.user$.next(token);
-            environment.user = token;
-            this.userService.get();
-        });
+        // debugger
+        // this.auth.isAuthenticated$.subscribe((authenticated) => {
+        //     this.authService._authenticated$.next(authenticated);
+        //     this.router.navigateByUrl('/dashboard');
+        // });
+        // this.auth.getAccessTokenSilently().subscribe((token) => {
+        //     if (token) {
+        //         environment.accessToken = token;
+        //     }
+        // });
+        // this.auth.idTokenClaims$.subscribe((token) => {
+        //     this.authService.user$.next(token);
+        //     environment.user = token;
+        //     this.userService.get();
+        // });
     }
 }

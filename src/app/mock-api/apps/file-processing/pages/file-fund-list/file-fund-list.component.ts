@@ -18,17 +18,17 @@ import { FilePageManagerComponent } from '../file-page-manager/file-page-manager
   styleUrls: ['./file-fund-list.component.scss']
 })
 export class FileFundListComponent implements OnInit {
-  files: FileMetadata[]
+  files: FileMetadata[]  =[]
   isSidebarOpen: boolean
-  filteredFiles: FileMetadata[]
+  filteredFiles: FileMetadata[]  =[]
   listOfSearchName: string[] = []
   listOfSearchAddress: string[] = []
   showMsg: boolean = false
   activeKey = 0
-  approvedFiles: FileMetadata[]
-  receivedFiles: FileMetadata[]
-  approvedPageSlice: any 
-  receivedPageSlice: any 
+  approvedFiles: FileMetadata[] =[]
+  receivedFiles: FileMetadata[] =[]
+  approvedPageSlice: any[] =[]
+  receivedPageSlice: any[] =[]
   searchInputControl: FormControl = new FormControl();
 
   mapOfSort: { [key: string]: any } = {

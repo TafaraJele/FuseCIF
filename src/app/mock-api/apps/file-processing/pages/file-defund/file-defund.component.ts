@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'app/mock-api/store';
 import { FundRequest } from 'app/shared/models/fundrequest.model';
+import { NotificationsService } from 'app/shared/notifications/notifications.service';
 import { FileService } from '../../services/files.service';
 import { approveFundOrDefund, loadFileAccounts, loadFileDefundRequests } from '../../store/actions/files.actions';
 import { selectFile } from '../../store/selectors/files.selector';
@@ -18,11 +19,11 @@ import { FilePageManagerComponent } from '../file-page-manager/file-page-manager
 export class FileDefundComponent implements OnInit {
   @Input() file: any
   fileId: any
-  defundrequests: FundRequest[]
+  defundrequests: FundRequest[] = []
   isSidebarOpen: boolean
-  filteredDefundRequests: FundRequest[]
-  successfulDefundRequests: FundRequest[]
-  errorsDefundRequests: FundRequest[]
+  filteredDefundRequests: FundRequest[]  = []
+  successfulDefundRequests: FundRequest[]  = []
+  errorsDefundRequests: FundRequest[]  = []
   listOfSearchName: string[] = []
   listOfSearchAddress: string[] = []
   showResubmit = false
@@ -30,9 +31,9 @@ export class FileDefundComponent implements OnInit {
   showMsg = false
   message: string
   searchInputControl: FormControl = new FormControl()
-  successPageSlice: any
-  errorPageSlice: any 
-  showApprove:boolean
+  successPageSlice: any[]  = []
+  errorPageSlice: any[]  = []
+  showApprove: boolean
 
   mapOfSort: { [key: string]: any } = {
     file: null,
@@ -48,7 +49,8 @@ export class FileDefundComponent implements OnInit {
   constructor(private store: Store<AppState>,
     private service: FileService,
     private activatedroute: ActivatedRoute,
-    private router: Router) {
+    private router: Router,
+    private notifyService: NotificationsService) {
 
     this.activatedroute.params.subscribe(
       params => {
@@ -57,7 +59,7 @@ export class FileDefundComponent implements OnInit {
         if (this.file) {
 
           this.store.dispatch(loadFileAccounts({ fileBatchNumber: this.file.batchNumber }))
-         
+
           this.message = ""
         }
       }
@@ -71,17 +73,17 @@ export class FileDefundComponent implements OnInit {
       if (this.file) {
 
         this.batchNumber = this.file.batchNumber;
-       
+
       }
     }
   }
 
   ngOnInit(): void {
-    
+
     this.showMsg = false
     this.refreshSuccessDefundRequests()
     this.refreshErrorDefundRequests()
-    if(this.file.status == "Received"){
+    if (this.file.status == "Received") {
       this.showApprove = true
     }
 
@@ -128,33 +130,35 @@ export class FileDefundComponent implements OnInit {
 
         if (file) {
           this.file = file
-          
+
         }
       })
     }
   }
-  ViewFileDetails(file):any{
+  ViewFileDetails(file): any {
     this.service.changeMessage(file)
     var fileManagers = new FilePageManagerComponent(this.service)
     fileManagers.ngOnInit()
-    this.router.navigate(['/file-manager/files',file.id]);
+    this.router.navigate(['/file-manager/files', file.id]);
 
   }
   onApprove() {
     this.showApprove = false
-    this.service.approveFile(this.file).subscribe(file => {
-      this.file = file
-      if (file) {
-       
+    this.service.approveFile(this.file).subscribe(response => {
+      this.file = response.resource
+      if (response.accepted) {
+        this.notifyService.showNotification('success', 'Funds load approved successfully!!!', 'OK')
+
       }
-      if (file.status == "Received") {
-        this.showApprove = true
+      else {
+        this.notifyService.showNotification('error', 'Something went wrong!!!', 'OK')
+
       }
 
     })
 
   }
-  
+
   refreshSuccessDefundRequests() {
     this.service.loadFileDeFundRequests(this.file.batchNumber).subscribe(defundrequests => {
 
@@ -182,25 +186,25 @@ export class FileDefundComponent implements OnInit {
         this.errorsDefundRequests = this.defundrequests.filter(c => c.status === "Error")
 
       }
-   
+
       this.filteredDefundRequests = this.errorsDefundRequests
       this.successPageSlice = this.successfulDefundRequests.slice(0, 5)
       this.errorPageSlice = this.errorsDefundRequests.slice(0, 5)
       if (this.errorsDefundRequests.length > 0) {
         this.showResubmit = true
 
-    }
-    else{
+      }
+      else {
 
-      this.showResubmit = false
-    }
-    
-  })
+        this.showResubmit = false
+      }
+
+    })
 
 
   }
   OnPageChange(event: PageEvent) {
-    
+
     const startIndex = event.pageIndex * event.pageSize;
 
     let endIndex = startIndex + event.pageSize;
@@ -209,7 +213,7 @@ export class FileDefundComponent implements OnInit {
     }
     this.successPageSlice = this.successfulDefundRequests.slice(startIndex, endIndex)
     this.errorPageSlice = this.errorsDefundRequests.slice(startIndex, endIndex)
-    
+
   }
 
   viewSuccess(): any {
@@ -222,34 +226,34 @@ export class FileDefundComponent implements OnInit {
     this.activeKey = 1
     this.showMsg = false
     this.refreshErrorDefundRequests()
-   
+
     if (this.errorsDefundRequests.length > 0) {
       this.showResubmit = true
     }
 
   }
   onResubmit(): any {
-    const metadata = { ...this.file }
+    this.notifyService.showNotification('notification', 'Funds load is being submitted!!!', '')
 
-    this.message = "Resubmitting!"
-    this.showMsg = true
-    
     if (this.file.batchNumber) {
-      
-      this.service.approveFundOrDefund(this.file).subscribe(response =>{
-     
-        if(response){
-     
+
+      this.service.approveFundOrDefund(this.file).subscribe(response => {
+
+        if (response) {
+
           this.refreshErrorDefundRequests()
           if (response.accepted) {
-         
-            setTimeout(() => {
-              this.message = "Submitted!"
-              this.showMsg = true
-            }, 2000)
+            this.notifyService.showNotification('success', 'Funds load submitted successfully!!!', 'OK')
+
           }
+          else {
+            this.notifyService.showNotification('error', 'Something went wrong!!!', 'OK')
+
+          }
+
         }
-        this.filteredDefundRequests = this.errorsDefundRequests
+
+
       })
     }
 

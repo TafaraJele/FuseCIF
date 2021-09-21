@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AppState } from 'app/mock-api/store';
 import { CIFConfiguration } from 'app/shared/models/cif-configuration.model';
+import { NotificationsService } from 'app/shared/notifications/notifications.service';
 import { FileService } from '../../../services/files.service';
 
 @Component({
@@ -19,7 +20,7 @@ export class SettingsCifComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private service: FileService,
-    private store: Store<AppState>) {
+    private notifyService : NotificationsService) {
     this.settings = new CIFConfiguration
     this.settingsForm = this.formBuilder.group({
       'matchMinValue': [''],
@@ -85,11 +86,13 @@ export class SettingsCifComponent implements OnInit {
    
 
     this.service.addSettings(this.settings).subscribe(res => {
-      this.showMsg = true
+
+      this.notifyService.showNotification('notifications','Settings are being saved','')
       if (res.accepted) {
-        setTimeout(() => {
-          this.showMsg = false
-        }, 2000)
+        this.notifyService.showNotification('success','Settings successfully saved','OK')
+      }
+      else{
+        this.notifyService.showNotification('error','Something went wrong','OK')
       }
     })
   }

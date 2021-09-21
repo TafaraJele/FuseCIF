@@ -7,6 +7,7 @@ import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/core/user/user.service';
 import { AuthService } from '@auth0/auth0-angular';
 import _ from 'lodash';
+import { user } from 'app/mock-api/common/user/data';
 
 @Component({
     selector       : 'user',
@@ -50,9 +51,14 @@ export class UserComponent implements OnInit, OnDestroy
         // Subscribe to user changes
         this._userService.user$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((user: User) => {
-                this.user = _.cloneDeep(user);
-                if(user && !user.status){
+            .subscribe((profile: User) => {
+                if(!profile){
+                    this._userService.user = user;
+                    profile = _.cloneDeep(user);
+                }
+                
+                this.user = _.cloneDeep(profile);
+                if(profile && !profile.status){
                     this.user.status = 'online'
                 }
                 // Mark for check

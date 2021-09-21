@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'app/mock-api/store';
 import { FundRequest } from 'app/shared/models/fundrequest.model';
+import { NotificationsService } from 'app/shared/notifications/notifications.service';
 import { FileService } from '../../services/files.service';
 import { approveFundOrDefund, loadFileAccounts, loadFileFundRequests } from '../../store/actions/files.actions';
 import { selectFile } from '../../store/selectors/files.selector';
@@ -18,11 +19,11 @@ import { selectFile } from '../../store/selectors/files.selector';
 })
 export class FileFundloadComponent implements OnInit {
   @Input() file: any
-  fundrequests: FundRequest[]
+  fundrequests: FundRequest[] = []
   isSidebarOpen: boolean
-  filteredFundRequests: FundRequest[]
-  successfulFundRequests: FundRequest[]
-  errorsFundRequests: FundRequest[]
+  filteredFundRequests: FundRequest[] = []
+  successfulFundRequests: FundRequest[] = []
+  errorsFundRequests: FundRequest[] = []
   listOfSearchName: string[] = []
   listOfSearchAddress: string[] = []
   fileId: any
@@ -30,8 +31,8 @@ export class FileFundloadComponent implements OnInit {
   showResubmit = false
   activeKey = 0
   showMsg = false
-  successPageSlice: any
-  errorPageSlice: any
+  successPageSlice: any[] = []
+  errorPageSlice: any[] = []
   showApprove: boolean 
 
   mapOfSort: { [key: string]: any } = {
@@ -49,7 +50,7 @@ export class FileFundloadComponent implements OnInit {
 
   constructor(private store: Store<AppState>,
     private service: FileService,
-    private router: Router,) {
+    private notifyService : NotificationsService) {
 
 
     if (this.file) {
@@ -168,14 +169,16 @@ export class FileFundloadComponent implements OnInit {
   }
   onApprove() {
     this.showApprove = false
-    this.service.approveFile(this.file).subscribe(file => {
-      this.file = file
-      if (file) {
-       
+    this.service.approveFile(this.file).subscribe(response => {
+     
+      if (response.accepted) {
+        this.file = response.resource
+        this.notifyService.showNotification('success', 'Fund load approved sucessfully', 'OK')        
       }
-      if (file.status == "Received") {
-        this.showApprove = true
-      }
+      else{
+        this.notifyService.showNotification('error', 'Fund load failed', 'OK')
+
+      }      
 
     })
 
@@ -201,9 +204,9 @@ export class FileFundloadComponent implements OnInit {
 
   }
   onResubmit(): any {
-    const metadata = { ...this.file }
-    this.message = "Resubmitting!"
-    this.showMsg = true
+    
+    this.showResubmit = false
+    this.notifyService.showNotification('notification', 'Funds load is being submitted!!!','')
 
     if (this.file.batchNumber) {
 
@@ -212,12 +215,12 @@ export class FileFundloadComponent implements OnInit {
         if (response) {
           this.refreshErrorFundRequests()
           if (response.accepted) {
+            this.notifyService.showNotification('success', 'Funds load submitted successfully!!!','OK')
+           
+          }
+          else{
+            this.notifyService.showNotification('error', 'Something went wrong!!!','OK')
 
-            setTimeout(() => {
-              this.message = "Submitted!"
-              this.showMsg = true
-              this.showResubmit = false
-            }, 2000)
           }
 
         }

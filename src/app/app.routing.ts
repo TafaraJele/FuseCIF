@@ -20,6 +20,24 @@ export const appRoutes: Route[] = [
 
 
     },      
+    {
+        path: 'dashboard',
+        canActivate: [AuthGuard],
+        canActivateChild: [AuthGuard],
+        component: LayoutComponent,
+        resolve: {
+            initialData: InitialDataResolver,
+        },
+        children: [
+            {
+                path: 'dashboard',
+                loadChildren: () =>
+                    import('app/dashboard/dashboard.module').then(
+                        m => m.DashboardModule
+                    ),
+            },
+        ],
+    },
 
     // Redirect empty path to '/dashboard'
     { path: '', pathMatch: 'full', redirectTo: 'dashboard' },

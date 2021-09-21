@@ -1,9 +1,11 @@
 <div>
-    Notification
+    {{data.messageType}}
 </div>
 <div>
-   {{data.message}}
+    {{data.message}}
 </div>
 <div>
-    <button mat-flatbutton (click) = 'snackBarRef.dismiss()'>{{data.buttonText}}</button>
+    <button mat-flatbutton (click)='snackBarRef.dismiss()' [ngClass]="{'error-border' : data.messageType === 'error',
+'success-border ':data.messageType === 'success'
+}">{{data.buttonText}}</button>
 </div>

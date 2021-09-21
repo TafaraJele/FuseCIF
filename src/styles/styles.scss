@@ -2,11 +2,32 @@
 /*  @ Import/write your custom styles here.
 /*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
 /* ----------------------------------------------------------------------------------------------------- */
-.cif-notifications{
+.notification{
     background: white !important;  
-    color:#1D4ED8 !important
-
+    color:#1D4ED8 !important;
+    border-width:thin !important;
+    border-color:#1D4ED8 !important
 }
+
 .success{
-    
+    background: white !important; 
+    color:#065F46 !important;
+    border-width:thin !important;
+    border-color:#065F46 !important
+}
+.error{
+    background: white !important; 
+    color:#B91C1C !important;
+    border-width:thin !important;
+    border-color:#B91C1C !important
+}
+.error-border{
+    border-width:thin !important;
+    border-color:#B91C1C !important;
+    border-radius: 30% !important
+}
+.success-border{
+    border-width:thin !important;
+    border-color:#065F46 !important;
+    border-radius: 30% !important
 }

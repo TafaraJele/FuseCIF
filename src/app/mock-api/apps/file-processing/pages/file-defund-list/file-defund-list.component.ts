@@ -19,15 +19,15 @@ import { Router } from '@angular/router';
 export class FileDefundListComponent implements OnInit {
   files: FileMetadata[]
   isSidebarOpen: boolean
-  filteredFiles: FileMetadata[]
+  filteredFiles: FileMetadata[]  = []
   listOfSearchName: string[] = []
   listOfSearchAddress: string[] = []
   showMsg: boolean = false
   activeKey = 0
-  approvedFiles: FileMetadata[]
-  receivedFiles: FileMetadata[]
-  approvedPageSlice : any
-  receivedPageSlice: any
+  approvedFiles: FileMetadata[]  = []
+  receivedFiles: FileMetadata[]  = []
+  approvedPageSlice : any[]  = []
+  receivedPageSlice: any[]  = []
   searchInputControl: FormControl = new FormControl();
 
   mapOfSort: { [key: string]: any } = {

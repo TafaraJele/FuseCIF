@@ -37,7 +37,7 @@ export class AuthInterceptor implements HttpInterceptor
         if (environment.accessToken )
         {
             newReq = req.clone({
-                headers: req.headers.set('Authorization', 'Bearer ' + this._authService.token$.value)
+                headers: req.headers.set('Authorization', 'Bearer ' + environment.accessToken)
             });
         }
 

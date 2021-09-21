@@ -29,30 +29,30 @@ export class FilePageComponent implements OnInit {
   fileId: any
   @Input() file: any
   filter: string
-  accounts: Account[]
-  customers: Customer[]
-  cards: Card[]
-  successfulCustomers: Customer[]
-  errorsCustomers: Customer[]
+  accounts: Account[] =[]
+  customers: Customer[] =[]
+  cards: Card[] =[]
+  successfulCustomers: Customer[] =[]
+  errorsCustomers: Customer[] =[]
   rejectedCustomers: Customer[]
-  amlockRejectedCustomers: Customer[]
-  cardChargeDebitError: Card[]
-  cardChargeCreditError: Card[]
-  cardRequestFailed: Card[]
-  filteredCards: Card[]
+  amlockRejectedCustomers: Customer[] =[]
+  cardChargeDebitError: Card[] =[]
+  cardChargeCreditError: Card[] =[]
+  cardRequestFailed: Card[] =[]
+  filteredCards: Card[] =[]
   showMsg = false
   showResubmit = false
   showResubmitCard = false
   isSidebarOpen: boolean
-  filteredCustomers: Customer[]
+  filteredCustomers: Customer[] =[]
   listOfSearchName: string[] = []
-  listOfSearchAddress: string[] = []
-  successPageSlice: any
-  errorPageSlice: any
-  rejectedPageSlice: any
-  cardsPageSlice: any
+  listOfSearchAddress: string[] = [] 
+  successPageSlice: any[] =[]
+  errorPageSlice: any[] = []
+  rejectedPageSlice: any[] =[]
+  cardsPageSlice: any[] =[]
   searchInputControl: FormControl = new FormControl();
-  amlockRejectedPageSlice: any
+  amlockRejectedPageSlice: any[] =[]
   activeKey = 0
   showApprove: boolean
   mapOfSort: { [key: string]: any } = {
@@ -74,7 +74,7 @@ export class FilePageComponent implements OnInit {
 
   ngOnInit(): void {
     
-    if(this.file.status == 'Received')
+    if(this.file.status == 'Received' || 'AmlockError')
     {
       this.showApprove = true
     }
@@ -245,20 +245,26 @@ export class FilePageComponent implements OnInit {
  
   onApprove() {
     this.showApprove = false
-     this.notifyService.showNotification('File is being approved. Please wait!!!','OK') 
+     this.notifyService.showNotification('notification','File is being approved. Please wait!!!','') 
 
-    // this.service.approveFile(this.file).subscribe(file =>{
-    //   this.file = file
-    //   if(file){
-    //     this.GetCustomers()
-    //     this.loadCards()
-    //   }
-    //   if(file.status =="Received")
-    //   {
-    //     this.showApprove = true
-    //   }
+    this.service.approveFile(this.file).subscribe(result =>{
+      debugger
+      
+      if(result.accepted){
+        this.file = result.resource        
+        this.GetCustomers()
+        this.loadCards()
+      }
+      if(this.file.status =='AmlockError')
+      {
+        this.showApprove = true
+        this.notifyService.showNotification('error','Connection to Amlock failed. ','OK') 
+      }
+      if(this.file.status =='Approved'){
+        this.notifyService.showNotification('success','File Approved','OK') 
+      }
 
-    // })
+    })
 
     }    
   

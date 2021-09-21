@@ -6,26 +6,39 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { UserService } from 'app/core/user/user.service';
 import { AuthService } from '@auth0/auth0-angular';
 import { environment } from 'environments/environment';
+import { Credentials } from 'app/shared/models/indigo-credentials';
+import { user } from 'app/mock-api/common/user/data';
 
+const baseUrl = environment.fileProcessingUrl
 @Injectable()
 export class AppAuthService {
-    token$: BehaviorSubject<any>;
-    user$: BehaviorSubject<any>;
-    _authenticated$ = new BehaviorSubject(false);
+
+    private _authenticated: boolean = false;
+
 
     /**
      * Constructor
      */
     constructor(
-        public auth: AuthService,
         private _httpClient: HttpClient,
         private _userService: UserService
     ) {
-        this.token$ = new BehaviorSubject('');
-        this.user$ = new BehaviorSubject({});
     }
 
+    // -----------------------------------------------------------------------------------------------------
+    // @ Accessors
+    // -----------------------------------------------------------------------------------------------------
 
+    /**
+     * Setter & getter for access token
+     */
+    set accessToken(token: string) {
+        localStorage.setItem('accessToken', token);
+    }
+
+    get accessToken(): string {
+        return localStorage.getItem('accessToken') ?? '';
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -54,58 +67,61 @@ export class AppAuthService {
      *
      * @param credentials
      */
+    signIn(credentials: Credentials): Observable<any> {
+        // Throw error, if the user is already logged in
+        if (this._authenticated) {
+            return throwError('User is already logged in.');
+        }
+        return this._httpClient.post(baseUrl + '/api/authentication/login', credentials).pipe(
+            switchMap((response: any) => {
 
+
+                let data = response.resource
+
+                // Store the access token in the local storage
+                this.accessToken = data.authToken;
+                // Set the authenticated flag to true
+                this._authenticated = true;
+
+                // Store the user on the user service
+                this._userService.user = user;
+
+                // Return a new observable with the response
+                return of(response);
+            })
+        );
+
+
+    }
 
     /**
      * Sign in using the access token
      */
     signInUsingToken(): Observable<any> {
         // Renew token
-        return this.auth.getAccessTokenSilently().pipe(
+        return this._httpClient.post('api/auth/refresh-access-token', {
+            accessToken: this.accessToken
+        }).pipe(
             catchError(() =>
 
                 // Return false
                 of(false)
             ),
             switchMap((response: any) => {
+
                 // Store the access token in the local storage
-                this.token$.next(response.accessToken);
+                this.accessToken = response.accessToken;
 
                 // Set the authenticated flag to true
-                this._authenticated$.next(true);
+                this._authenticated = true;
 
                 // Store the user on the user service
-                // this._userService.user = response.user;
+                this._userService.user = response.user;
 
                 // Return true
                 return of(true);
             })
         );
-
-
-        // this._httpClient.post('api/auth/refresh-access-token', {
-        //     accessToken: this.token$.value
-        // }).pipe(
-        //     catchError(() =>
-
-        //         // Return false
-        //         of(false)
-        //     ),
-        //     switchMap((response: any) => {
-
-        //         // Store the access token in the local storage
-        //         this.token$.next(response.accessToken);
-
-        //         // Set the authenticated flag to true
-        //      //   this._authenticated$ = true;
-
-        //         // Store the user on the user service
-        //         this._userService.user = response.user;
-
-        //         // Return true
-        //         return of(true);
-        //     })
-        // );
     }
 
     /**
@@ -113,7 +129,11 @@ export class AppAuthService {
      */
     signOut(): Observable<any> {
         // Remove the access token from the local storage
-        this.auth.logout();
+        localStorage.removeItem('accessToken');
+
+        // Set the authenticated flag to false
+        this._authenticated = false;
+
         // Return the observable
         return of(true);
     }
@@ -141,16 +161,20 @@ export class AppAuthService {
      */
     check(): Observable<boolean> {
         // Check if the user is logged in
-        if (this._authenticated$.value) {
+        if (this._authenticated) {
             return of(true);
         }
 
         // Check the access token availability
-        if (!environment.accessToken) {
+        if (!this.accessToken) {
             return of(false);
         }
 
-
+        // Check the access token expire date
+        // if ( AuthUtils.isTokenExpired(this.accessToken) )
+        // {
+        //     return of(false);
+        // }
 
         // If the access token exists and it didn't expire, sign in using it
         return this.signInUsingToken();
