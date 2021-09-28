@@ -1,6 +1,7 @@
 export interface FuseConfirmationConfig
 {
     title?: string;
+    subtitle?:string;
     message?: string;
     icon?: {
         show?: boolean;
@@ -11,7 +12,7 @@ export interface FuseConfirmationConfig
         confirm?: {
             show?: boolean;
             label?: string;
-            color?: 'primary' | 'accent' | 'warn';
+            color?: 'primary' | 'accent' | 'warn' | 'success';
         };
         cancel?: {
             show?: boolean;

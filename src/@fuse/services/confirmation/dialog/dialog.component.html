@@ -45,12 +45,20 @@
                         [innerHTML]="data.title"></div>
                 </ng-container>
 
+                 <!-- SubTitle -->
+                 <ng-container *ngIf="data.subtitle">
+                    <div
+                        class="text-secondary"
+                        [innerHTML]="data.subtitle"></div>
+                </ng-container>
+
                 <!-- Message -->
                 <ng-container *ngIf="data.message">
                     <div
                         class="text-secondary"
                         [innerHTML]="data.message"></div>
                 </ng-container>
+
             </div>
         </ng-container>
 
@@ -73,7 +81,12 @@
             <ng-container *ngIf="data.actions.confirm.show">
                 <button
                     mat-flat-button
-                    [color]="data.actions.confirm.color"
+                    
+                    [ngClass]="{'text-primary-600 bg-primary-100 dark:text-primary-50 dark:bg-primary-600': data.actions.confirm.color === 'primary',
+                    'text-accent-600 bg-accent-100 dark:text-accent-50 dark:bg-accent-600': data.actions.confirm.color === 'accent',
+                    'text-warn-600 bg-warn-100 dark:text-warn-50 dark:bg-warn-600': data.actions.confirm.color === 'warn',                    
+                    'text-green-500 bg-green-100 dark:text-green-50 dark:bg-green-500': data.actions.confirm.color === 'success'                   
+                    }"
                     [matDialogClose]="'confirmed'">
                     {{data.actions.confirm.label}}
                 </button>

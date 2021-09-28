@@ -1,4 +1,20 @@
-<div>{{response.batchNumber}}</div>
-<div>{{response.message}}</div>
-<div>{{response.responseCode}}</div>
-<div>{{response.fileReferenceNumber}}</div>
+<div class="grid grid-cols-2 gap-4"> 
+
+    <div class ="flex-row"> <mat-icon svgIcon="heroicons_outline:archive"></mat-icon>Batch Number</div>
+    <div>{{response.batchNumber}}</div>
+    <div  class ="flex-row" >
+        <mat-icon svgIcon="heroicons_outline:mail"></mat-icon>Message
+    </div> 
+    <div>{{response.message}}</div>   
+    <div class ="flex-row">
+        <mat-icon svgIcon="heroicons_outline:document"></mat-icon>
+        File reference number</div>
+    <div>{{response.fileReferenceNumber}}</div>
+    
+    <div></div>
+    <div class ="m-24">
+        <button mat-flat-button [color]="'primary'">
+            <span class="ml-2 mr-1">OK</span>
+        </button>
+    </div>
+</div>

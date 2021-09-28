@@ -50,10 +50,10 @@ export class FileListPageComponent implements OnInit {
     
     // this.store.dispatch(new UserActions.LoadFiles())
     this.service.loadFiles().subscribe(files => {
-      
+      debugger
       if (files) {
 
-        this.files = files.filter(c => c.requestType == 'cardfunding')
+        this.files = files.filter(c => c.requestType == 'cardrequest')
         this.approvedFiles = this.files.filter(c => c.status == 'Approved')
         this.receivedFiles = this.files.filter(c => c.status == 'Received') 
         this.filteredFiles = this.receivedFiles            
@@ -66,7 +66,7 @@ export class FileListPageComponent implements OnInit {
   
       if (files) {
         
-        this.files = files.filter(c => c.requestType == 'cardfunding')
+        this.files = files.filter(c => c.requestType == 'cardrequest')
         this.approvedFiles = this.files.filter(c => c.status == 'Approved')
         this.receivedFiles = this.files.filter(c => c.status == 'Received') 
         this.filteredFiles = this.receivedFiles       
