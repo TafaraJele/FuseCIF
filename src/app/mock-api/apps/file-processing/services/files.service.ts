@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core'
 import { CIFConfiguration } from 'app/shared/models/cif-configuration.model'
 import { FileApproval } from 'app/shared/models/file-approval.model'
 import { FileMetadata } from 'app/shared/models/filemetadata.model'
+import { UploadResponse } from 'app/shared/models/upload-reponse'
 import { environment } from 'environments/environment'
 import { BehaviorSubject, Observable } from 'rxjs'
 
@@ -12,6 +13,7 @@ const baseUrl = environment.fileProcessingUrl
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 }
+const httpFormOptions = {headers: new HttpHeaders({'Content-Disposition':'multipart/form-data'})}
 @Injectable({
     providedIn: 'root',
 })
@@ -21,6 +23,9 @@ export class FileService {
 
     loadFiles(): Observable<any> {
         return this._httpClient.get(baseUrl + '/api/files/filemetadata')
+    }
+    loadFidelityFiles(): Observable<any> {
+        return this._httpClient.get(baseUrl + '/api/files/filedity/filemetadata')
     }
     loadBatchCustomers(fileBatchNumber: string): Observable<any> {
         return this._httpClient.get(baseUrl + '/api/Customers/' + fileBatchNumber)
@@ -64,9 +69,7 @@ export class FileService {
     }
 
     reApproveChargeFee(file: Partial<FileMetadata>): Observable<any> {
-
         return this._httpClient.post(baseUrl + '/api/files/resubmit-chargefee', file, httpOptions)
-
     }
 
     loadFileFundRequests(fileBatchNumber: string): Observable<any> {
@@ -75,7 +78,13 @@ export class FileService {
     loadFileDeFundRequests(fileBatchNumber: string): Observable<any> {
         return this._httpClient.get(baseUrl + '/api/accounts/carddefundrequests/' + fileBatchNumber, httpOptions)
     }
-    
+    UploadFile(file: any): Observable<any> {
+        return this._httpClient.post(baseUrl +'/api/files/fidelity',file, httpFormOptions)
+    }
+
+
+
+
     file: FileMetadata = null
     private messageSource = new BehaviorSubject<FileMetadata>(new FileMetadata)
     private userApplications = new BehaviorSubject<any>(this.file)
@@ -85,6 +94,18 @@ export class FileService {
         this.messageSource.next(file)
 
     }
+
+response: UploadResponse = null
+private responseMessage = new BehaviorSubject<UploadResponse>(new UploadResponse)
+currentResponse = this.responseMessage.asObservable()
+changeResponse(response: UploadResponse) {
+    this.responseMessage.next(response)
+
+}
+
+
+
+
 
     exportToCsv(filename: string, rows: object[]): any {
         if (!rows || !rows.length) {

@@ -124,9 +124,10 @@ export class FilePageComponent implements OnInit {
             this.cardChargeCreditError = this.cards.filter(c => c.creditStatus == "Error")
             this.cardRequestFailed = this.cards.filter(c => c.cardStatus == "RequestFailed")
           }
-          this.cardsPageSlice = this.cards.slice(0,5)
-
+          
         }
+        this.cardsPageSlice = this.cards.slice(0,5)
+
       })
     }
   }
@@ -230,8 +231,7 @@ export class FilePageComponent implements OnInit {
           this.errorsCustomers = this.customers.filter(c => c.status === 'Error')
           this.rejectedCustomers = this.customers.filter(c => c.status === 'Rejected')
           this.amlockRejectedCustomers = this.customers.filter(c => c.status === 'AmlockRejected')
-        }
-        
+        }        
 
         this.successPageSlice = this.successfulCustomers.slice(0, 5)
         this.errorPageSlice = this.errorsCustomers.slice(0, 5)

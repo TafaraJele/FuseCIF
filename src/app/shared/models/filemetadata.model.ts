@@ -7,4 +7,7 @@ export class FileMetadata {
     timeSaved: Date
     requestType: string
     priority: string
+    channel: string
+    productName: string
+    productCode: string
 }

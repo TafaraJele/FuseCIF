@@ -1,0 +1,11 @@
+{
+    "imports": {
+        "user-management": "http://localhost:4201/main.js",
+        "tenant-management": "http://localhost:4202/main.js",
+        "card-management": "http://localhost:4203/main.js",
+        "card-issuing": "http://localhost:4204/main.js",
+        "lookup-management": "http://localhost:420s/main.js",
+        "transaction-processing": "http://localhost:4206/main.js"
+
+    }
+}

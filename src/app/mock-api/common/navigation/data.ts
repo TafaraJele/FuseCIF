@@ -55,7 +55,7 @@ export const compactNavigation: FuseNavigationItem[] = [
     {
         id: 'transaction.processing',
         title: 'Fidelity Card Funding',
-        subtitle: 'Card management application',
+        subtitle: 'Card funding application',
         type: 'aside',
         icon: 'mat_outline:account_balance_wallet',
         children: [
@@ -64,14 +64,14 @@ export const compactNavigation: FuseNavigationItem[] = [
                 title: 'Master Card Funding',
                 type: 'basic',
                 icon: 'heroicons_outline:presentation-chart-bar',
-                link: '/apps/transaction-processing',
+                link: '/file-manager/mastercard-funding',
             },
             {
                 id: 'transaction.processing.transaction-limits',
                 title: 'Master Card Defunding',
                 type: 'basic',
                 icon: 'heroicons_outline:receipt-tax',
-                link: '/apps/transaction-processing/limits',
+                link: '/file-manager/mastercard-defunding',
             },
         ],
     },

@@ -137,7 +137,7 @@ export class FileFundloadComponent implements OnInit {
     this.service.loadFileFundRequests(this.file.batchNumber).subscribe(fundrequests => {
 
       this.fundrequests = fundrequests
-
+debugger
       if (this.fundrequests && this.fundrequests.length > 0) {
         this.successfulFundRequests = this.fundrequests.filter(c => c.status === "ChargeSuccess" || c.status === "Received")
         this.errorsFundRequests = this.fundrequests.filter(c => c.status === "Error")

@@ -28,6 +28,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatGridListModule } from '@angular/material/grid-list';
 import {MatCardModule} from '@angular/material/card';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 
@@ -63,7 +64,8 @@ const modules = [
   MatSortModule,
   MatGridListModule,
   MatCardModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatDialogModule
 
 ];
 @NgModule({

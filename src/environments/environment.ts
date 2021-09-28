@@ -16,6 +16,7 @@ const { domain, clientId, audience, apiUrl, errorPath } = config as {
 export const environment = {
     production: false,
     accessToken: '',
+    fileProcessingUrl:'https://localhost:44395',
     user: null,
     auth: {
         domain,
@@ -27,7 +28,7 @@ export const environment = {
       httpInterceptor: {
         allowedList: [`${apiUrl}/*`],
       },
-      fileProcessingUrl:'https://localhost:44395'
+     
 };
 
 /*

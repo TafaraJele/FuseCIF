@@ -22,5 +22,7 @@ export const environment = {
       },
       httpInterceptor: {
         allowedList: [`${apiUrl}/*`],
-      }
+      },
+      fileProcessingUrl: 
+  'https://10.179.143.120:447/fileprocessing',
 };

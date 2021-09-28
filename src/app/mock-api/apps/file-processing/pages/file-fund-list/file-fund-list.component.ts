@@ -45,8 +45,7 @@ export class FileFundListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
-    // this.store.dispatch(new UserActions.LoadFiles())
+        
     this.service.loadFiles().subscribe(files => {
       
       if (files) {

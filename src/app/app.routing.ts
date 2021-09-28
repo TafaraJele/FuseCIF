@@ -30,7 +30,7 @@ export const appRoutes: Route[] = [
         },
         children: [
             {
-                path: 'dashboard',
+                path: '',
                 loadChildren: () =>
                     import('app/dashboard/dashboard.module').then(
                         m => m.DashboardModule

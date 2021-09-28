@@ -21,22 +21,17 @@ import { NotificationsService } from 'app/shared/notifications/notifications.ser
   styleUrls: ['./file-list-page.component.scss']
 })
 export class FileListPageComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator
-  files: FileMetadata[] = [] 
+  files: FileMetadata[]  =[]
   isSidebarOpen: boolean
-  filteredFiles: FileMetadata[]
+  filteredFiles: FileMetadata[]  =[]
   listOfSearchName: string[] = []
   listOfSearchAddress: string[] = []
   showMsg: boolean = false
+  activeKey = 0
   approvedFiles: FileMetadata[] =[]
   receivedFiles: FileMetadata[] =[]
-  errorFiles: FileMetadata[] = []
-  activeKey = 0
-  isDisabled: boolean
-  approvedPageSlice: any[] = []
-  receivedPageSlice: any[] = []
-  p: any
-  opened: boolean;
+  approvedPageSlice: any[] =[]
+  receivedPageSlice: any[] =[]
   searchInputControl: FormControl = new FormControl();
 
   mapOfSort: { [key: string]: any } = {
@@ -48,30 +43,37 @@ export class FileListPageComponent implements OnInit {
   }
   sortName: string | null = null
   sortValue: string | null = null
-  constructor(
-    private service: FileService, 
-    private router: Router ) {
+  constructor(private store: Store<AppState>,
+    private service: FileService, private router: Router, private fileManager: FilePageManagerComponent) {
   }
-
-
   ngOnInit(): void {
     
+    // this.store.dispatch(new UserActions.LoadFiles())
     this.service.loadFiles().subscribe(files => {
-
+      
       if (files) {
 
-        this.files = files.filter(c => c.requestType == 'cardrequest')
+        this.files = files.filter(c => c.requestType == 'cardfunding')
         this.approvedFiles = this.files.filter(c => c.status == 'Approved')
-        this.receivedFiles = this.files.filter(c => c.status == 'Received' || c.status == 'Loading' || c.status == 'AmlockError')
-        this.filteredFiles = this.receivedFiles
-        this.approvedPageSlice = this.approvedFiles.slice(0, 5)
-        this.receivedPageSlice = this.receivedFiles.slice(0, 5)
+        this.receivedFiles = this.files.filter(c => c.status == 'Received') 
+        this.filteredFiles = this.receivedFiles            
+        this.approvedPageSlice = this.approvedFiles.slice(0, 5) 
+        this.receivedPageSlice = this.receivedFiles.slice(0, 5) 
 
       }
-    })    
+    })
+    this.store.pipe(select(selectFiles())).subscribe(files => {
+  
+      if (files) {
+        
+        this.files = files.filter(c => c.requestType == 'cardfunding')
+        this.approvedFiles = this.files.filter(c => c.status == 'Approved')
+        this.receivedFiles = this.files.filter(c => c.status == 'Received') 
+        this.filteredFiles = this.receivedFiles       
+      }
+    })
 
-    this.isDisabled = true
-
+   
   }
   sort(sortName: string, value: string): void {
     this.sortName = sortName
@@ -109,12 +111,8 @@ export class FileListPageComponent implements OnInit {
       this.filteredFiles = this.files
     }
   }
- 
-  trackByFn(index: number, item: any): any {
-    return item.id || index;
-  }
   OnPageChange(event: PageEvent) {
-
+    
     const startIndex = event.pageIndex * event.pageSize;
 
     let endIndex = startIndex + event.pageSize;
@@ -125,18 +123,43 @@ export class FileListPageComponent implements OnInit {
     this.receivedPageSlice = this.receivedFiles.slice(startIndex, endIndex)
 
   }
-  ViewFileDetails(file): any {
-
+  ViewFileDetails(file):any{
+ 
     this.service.changeMessage(file)
     var fileManagers = new FilePageManagerComponent(this.service)
     fileManagers.ngOnInit()
-    this.router.navigate(['/file-manager/files', file.id]);
+    this.router.navigate(['/file-manager/files',file.id]);
 
   }
-
+  viewApproved(){
+    this.filteredFiles = this.approvedFiles
+  }
+  viewReceived(){
+    this.filteredFiles = this.receivedFiles
+  }
  
+  onApprove(file): any {
+    
+    this.files.forEach((file) => {
+      
+        const metadata = { ...file }
+        metadata.status = 'Loading'  
+    
+    })
+    
+
+      const metadata = { ...file }
+      metadata.status = 'Approved'
+      this.showMsg = true
+
+      this.store.dispatch(approveFundOrDefund({ file: metadata }))
+      
+    setTimeout(() => {
+      this.showMsg = false
+    }, 2000)
+  }
   exportToCsv(filter): any {
-    let name = 'cardrequestsfiles.csv'
+    let name = 'fundrequestsfiles.csv'
     let filteredFiles = this.files
     if (filter) {
       name = filter + name + '.csv'
@@ -144,6 +167,7 @@ export class FileListPageComponent implements OnInit {
     }
     this.service.exportToCsv(name, filteredFiles)
   }
+  
 
 
 }

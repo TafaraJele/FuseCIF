@@ -16,6 +16,9 @@ import { SettingsPaymentFileComponent } from '../settings/settings-payment-file/
 import { SettingsAmlockComponent } from '../settings/settings-amlock/settings-amlock.component';
 import { SettingsFimiComponent } from '../settings/settings-fimi/settings-fimi.component';
 import { SettingsFlexcubeComponent } from '../settings/settings-flexcube/settings-flexcube.component';
+import { MastercardDefundComponent } from '../file-uploads/mastercard-defunding/mastercard-defund/mastercard-defund.component';
+import { MastercardFundingComponent } from '../file-uploads/mastercard-funding/mastercard-funding/mastercard-funding.component';
+import { UploadResponsesComponent } from '../file-uploads/upload-responses/upload-responses/upload-responses.component';
 
 const routes: Routes = [
   {
@@ -50,24 +53,35 @@ const routes: Routes = [
     path: 'settings',
     component: SettingsComponent
   },
+  {
+    path: 'mastercard-funding',
+    component: MastercardFundingComponent
+  },
+  {
+    path: 'mastercard-defunding',
+    component: MastercardDefundComponent
+  }
 
 ]
 
 @NgModule({
   declarations: [
-    FileDefundComponent, 
-    FileDefundListComponent, 
-    FileFundloadComponent, 
-    FileFundListComponent, 
-    FileListPageComponent, 
-    FilePageComponent, 
-    FilePageManagerComponent, 
+    FileDefundComponent,
+    FileDefundListComponent,
+    FileFundloadComponent,
+    FileFundListComponent,
+    FileListPageComponent,
+    FilePageComponent,
+    FilePageManagerComponent,
     SettingsComponent,
-    SettingsCifComponent, 
-    SettingsPaymentFileComponent, 
-    SettingsAmlockComponent, 
+    SettingsCifComponent,
+    SettingsPaymentFileComponent,
+    SettingsAmlockComponent,
     SettingsFimiComponent,
-     SettingsFlexcubeComponent,
+    SettingsFlexcubeComponent,
+    MastercardDefundComponent,
+    MastercardFundingComponent,
+    UploadResponsesComponent
   ],
   imports: [
     CommonModule,
