@@ -13,46 +13,40 @@ import { FileService } from '../../../services/files.service';
 })
 export class SettingsCifComponent implements OnInit {
 
+  allsettings:CIFConfiguration[] = []
+  filteredSettings:CIFConfiguration[] = []
   settings: CIFConfiguration
   settingsForm: FormGroup
   showMsg: boolean = false
+  showForm: boolean
+  showCreate: boolean
+  showSave:boolean
+  channel: string
  
   constructor(
     private formBuilder: FormBuilder,
     private service: FileService,
     private notifyService : NotificationsService) {
     this.settings = new CIFConfiguration
-    this.settingsForm = this.formBuilder.group({
-      'matchMinValue': [''],
-      'cardChargeFee': [''],
-      'accountPrefix': [''],      
-      'flexCubeWebServiceUri':[''],
-      'sFTPPaymentFilePath':[''],
-      'branch':[''],
-      'cardIssueDebitAccountNumber': [''],
-      'cardIssueCreditAccountNumber': [''],
-      'cardFundingDebitAccountNumber': [''],
-      'cardFundingCreditAccountNumber': [''],
-      'cardDefundingDebitAccountNumber': [''],
-      'cardDefundingCreditAccountNumber': [''],
-      
-    })
+   
   }
 
   ngOnInit(): void {
-    
+    this.showForm = false
+    this.showSave = false
+    this.showCreate = false
     this.service.loadSettings().subscribe(settings => {
       if (settings) {
 
-        this.settings = settings
-        this.patchForm()
+        this.allsettings = settings
+       
       }
     })
   }
 
   patchForm(): any {    
     
-    this.settingsForm.patchValue({
+    this.settingsForm.patchValue({     
       matchMinValue: this.settings.matchMinValue,
       cardChargeFee: this.settings.cardChargeFee,
       accountPrefix: this.settings.accountPrefix,      
@@ -65,12 +59,14 @@ export class SettingsCifComponent implements OnInit {
       cardFundingCreditAccountNumber: this.settings.cardFundingCreditAccountNumber,
       cardDefundingDebitAccountNumber: this.settings.cardDefundingDebitAccountNumber,
       cardDefundingCreditAccountNumber: this.settings.cardDefundingCreditAccountNumber,
+      channel: this.channel
     })
   }
 
   onSave(): any {
 
     this.settings = { ... this.settings }
+    this.settings.channel = this.channel
     this.settings.matchMinValue = '' + this.settingsForm.value['matchMinValue']
     this.settings.cardChargeFee = '' + this.settingsForm.value['cardChargeFee']
     this.settings.accountPrefix = this.settingsForm.value['accountPrefix']    
@@ -89,12 +85,98 @@ export class SettingsCifComponent implements OnInit {
 
       this.notifyService.showNotification('notifications','Settings are being saved','')
       if (res.accepted) {
+        debugger
+        this.filteredSettings = res.resource
         this.notifyService.showNotification('success','Settings successfully saved','OK')
+        this.service.loadSettings().subscribe(settings => {
+          if (settings) {
+    
+            this.allsettings = settings
+           
+          }
+        })
+       
       }
       else{
         this.notifyService.showNotification('error','Something went wrong','OK')
       }
     })
+  }
+
+  ShowSettingsForm(channel: string){
+
+    if(channel === "FIDELITY"){
+      debugger
+      this.setChannelForm(channel)
+
+    }
+    if(channel ==="EZPAY"){
+      debugger
+      this.setChannelForm(channel)     
+
+    }
+
+  }
+
+  setFormIntialValues(channel:string){
+    this.settingsForm = this.formBuilder.group({
+      'channel':[channel],
+      'matchMinValue': [''],
+      'cardChargeFee': [''],
+      'accountPrefix': [''],      
+      'flexCubeWebServiceUri':[''],
+      'sFTPPaymentFilePath':[''],
+      'branch':[''],
+      'cardIssueDebitAccountNumber': [''],
+      'cardIssueCreditAccountNumber': [''],
+      'cardFundingDebitAccountNumber': [''],
+      'cardFundingCreditAccountNumber': [''],
+      'cardDefundingDebitAccountNumber': [''],
+      'cardDefundingCreditAccountNumber': [''],
+      
+    })
+  }
+
+ prepopulateFormValues(channel:string){
+    this.settingsForm = this.formBuilder.group({
+      'channel':[channel],
+      'matchMinValue': [this.settings.matchMinValue],
+      'cardChargeFee': [this.settings.cardChargeFee],
+      'accountPrefix': [this.settings.accountPrefix],      
+      'flexCubeWebServiceUri':[this.settings.flexCubeWebServiceUri],
+      'sFTPPaymentFilePath':[this.settings.sftpPaymentFilePath],
+      'branch':[this.settings.branch],
+      'cardIssueDebitAccountNumber': [this.settings.cardIssueDebitAccountNumber],
+      'cardIssueCreditAccountNumber': [this.settings.cardIssueCreditAccountNumber],
+      'cardFundingDebitAccountNumber': [this.settings.cardFundingDebitAccountNumber],
+      'cardFundingCreditAccountNumber': [this.settings.cardFundingCreditAccountNumber],
+      'cardDefundingDebitAccountNumber': [this.settings.cardDefundingDebitAccountNumber],
+      'cardDefundingCreditAccountNumber': [this.settings.cardDefundingCreditAccountNumber],
+      
+    })
+  }
+
+  setChannelForm(channel: string){
+    this.showForm = true
+    this.showSave = true
+      this.channel = channel
+
+      if(this.allsettings && this.allsettings.length > 0){
+        debugger
+        this.filteredSettings = this.allsettings.filter(c => c.channel === channel)
+        this.settings = this.filteredSettings[0]
+
+        if( this.filteredSettings.length > 0 ){
+
+          this.prepopulateFormValues(channel)
+        } 
+        else{
+
+          this.setFormIntialValues(channel)
+          
+        }  
+      }
+
   }
 
 }

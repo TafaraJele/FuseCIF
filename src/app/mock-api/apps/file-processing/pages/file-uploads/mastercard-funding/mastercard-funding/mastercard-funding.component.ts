@@ -208,7 +208,7 @@ export class MastercardFundingComponent implements OnInit {
           "message": this.uploadErrorResponse[0].message,
           "icon": {
             "show": true,
-            "name": "heroicons_outline:check",
+            "name": "heroicons_outline:exclamation",
             "color": "warn"
           },
           "actions": {

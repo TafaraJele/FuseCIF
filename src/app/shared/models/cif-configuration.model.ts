@@ -1,4 +1,6 @@
 export class CIFConfiguration {
+    id:string
+    channel:string
     matchMinValue: string
     cardChargeFee: string
     accountPrefix: string

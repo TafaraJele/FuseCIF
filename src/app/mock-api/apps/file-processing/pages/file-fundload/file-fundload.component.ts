@@ -169,7 +169,7 @@ debugger
   }
   onApprove() {
     this.showApprove = false
-    this.service.approveFile(this.file).subscribe(response => {
+    this.service.approveFundOrDefund(this.file).subscribe(response => {
      
       if (response.accepted) {
         this.file = response.resource

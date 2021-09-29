@@ -4,23 +4,42 @@
     <form [formGroup]="settingsForm">
 
         <!-- Section -->
-        <div class="w-full">
-            <div class="text-xl">Application</div>
-            <div class="text-secondary">Set all the application settings, they are required!</div>
+        <div class="w-full">         
+            
+            <span>
+                <span class="text-secondary">Select the channel you are configuring</span>
+                <span class= "ml-64">
+                    <button class="ml-4" mat-flat-button [color]="'primary'" (click) = "ShowSettingsForm('EZPAY')" >               
+                        <span class="ml-2 mr-1">EZPAY</span>
+                    </button>
+                    <button class="ml-4" mat-flat-button [color]="'accent'" (click) = "ShowSettingsForm('FIDELITY')" >                
+                        <span class="ml-2 mr-1">FIDELITY</span>
+                    </button>
+                </span>
+                
+            </span>
+            
         </div>
-        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8" *ngIf ='showForm'> 
+            <span class="sm:col-span-4">
+                <mat-label>Channel</mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input #channel type="text" class="form-control" placeholder="Channel..."
+                        [formControlName]="'channel'" matInput [readonly]="true">
+                </mat-form-field>
+            </span>           
             <span class="sm:col-span-4">
                 <mat-label>Match Min Value</mat-label>
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <input type="number" class="form-control" placeholder="Match min value..."
-                        [formControlName]="'matchMinValue'" matInput>
+                        [formControlName]="'matchMinValue'" matInput [required]>
                 </mat-form-field>
             </span>
             <span class="sm:col-span-4">
                 <mat-label>Card Charge Fee</mat-label>
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <input type="number" class="form-control" placeholder="Card charge fee..."
-                        [formControlName]="'cardChargeFee'" matInput>
+                        [formControlName]="'cardChargeFee'" matInput [required]>
                 </mat-form-field>
             </span>
             <span class="sm:col-span-4">
@@ -97,7 +116,7 @@
                 </mat-label>
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <input type="text" class="form-control" placeholder="Banch ID..." [formControlName]="'branch'"
-                        matInput>
+                        matInput [required]>
                 </mat-form-field>
             </span>
 
@@ -112,8 +131,9 @@
 
         <!-- Actions -->
         <div class="flex items-center justify-end">
-            
-            <button (click)="onSave()" class="ml-4" mat-flat-button type="button" [color]="'primary'">Save
+            <button *ngIf ='showCreate' (click)="onSave()" class="ml-4" mat-flat-button type="button" [color]="'primary'">Create
+            </button>
+            <button *ngIf ='showSave' (click)="onSave()" class="ml-4" mat-flat-button type="button" [color]="'primary'">Save
             </button>
         </div>
     </form>

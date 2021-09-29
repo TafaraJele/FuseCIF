@@ -62,7 +62,7 @@ export class FileService {
 
     updateSettings(changes: Partial<CIFConfiguration>): Observable<any> {
         return this._httpClient.put(baseUrl + '/api/configuration/settings', changes, httpOptions)
-    }
+    }    
 
     approveFundOrDefund(file: Partial<FileMetadata>): Observable<any> {
         return this._httpClient.post(baseUrl + '/api/accounts/approvefund-defund-requests', file, httpOptions)
