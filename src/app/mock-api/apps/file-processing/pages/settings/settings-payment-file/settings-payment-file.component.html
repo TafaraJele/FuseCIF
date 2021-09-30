@@ -4,103 +4,97 @@
     <form [formGroup]="settingsForm">
 
         <!-- Section -->
-        <div class="w-full">
-            <div class="text-xl">Application</div>
-            <div class="text-secondary">Set all the application settings, they are required!</div>
+        <div class="w-full">         
+            
+            <span>
+                <span class="text-secondary">Select the product you are configuring</span>
+                <span>
+                    <button class="ml-4" mat-flat-button [color]="'primary'" (click) = "ShowSettingsForm('VISA_GOG_PREPAID')" >               
+                        <span class="ml-2 mr-1">VISA_GOG_PREPAID</span>
+                    </button>
+                    <button class="ml-4" mat-flat-button [color]="'warn'" (click) = "ShowSettingsForm('MASTERCARD_PREPAID ')" >                
+                        <span class="ml-2 mr-1">MASTERCARD_PREPAID</span>
+                    </button>
+                </span>
+                
+            </span>
+            
         </div>
-        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8" *ngIf ='showForm'> 
             <span class="sm:col-span-4">
-                <mat-label>Match Min Value</mat-label>
+                <mat-label>Product Name</mat-label>
                 <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <input type="number" class="form-control" placeholder="Match min value..."
-                        [formControlName]="'matchMinValue'" matInput>
+                    <input #productName type="text" class="form-control" placeholder="productName..."
+                        [formControlName]="'productName'" matInput [readonly]="true">
+                </mat-form-field>
+            </span>           
+            <span class="sm:col-span-4">
+                <mat-label>Funding Reversal Indicator</mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Funding Reversal Indicator..."
+                        [formControlName]="'fundingReversalIndicator'" matInput [required]>
                 </mat-form-field>
             </span>
             <span class="sm:col-span-4">
-                <mat-label>Card Charge Fee</mat-label>
+                <mat-label>Defunding Reversal Indicator</mat-label>
                 <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <input type="number" class="form-control" placeholder="Card charge fee..."
-                        [formControlName]="'cardChargeFee'" matInput>
+                    <input type="TEXT" class="form-control" placeholder="Defunding Reversal Indicator..."
+                        [formControlName]="'defundingReversalIndicator'" matInput [required]>
                 </mat-form-field>
             </span>
             <span class="sm:col-span-4">
-                <mat-label>Account Prefix</mat-label>
+                <mat-label>Reference</mat-label>
                 <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <input class="form-control" placeholder="Account prefix..." [formControlName]="'accountPrefix'"
+                    <input class="form-control" placeholder="Reference..." [formControlName]="'reference'"
                         matInput>
                 </mat-form-field>
             </span>
             <span class="sm:col-span-4">
-                <mat-label>Card issue debit account number</mat-label>
+                <mat-label>Card Billing Currency</mat-label>
                 <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <input type="text" class="form-control" placeholder="Card issue debit account number..."
-                        [formControlName]="'cardIssueDebitAccountNumber'" matInput>
+                    <input type="text" class="form-control" placeholder="Card Billing Currency..."
+                        [formControlName]="'cardBillingCurrency'" matInput>
                 </mat-form-field>
             </span>
             <span class="sm:col-span-4">
-                <mat-label>Card issue credit account number</mat-label>
+                <mat-label>Reason Code</mat-label>
                 <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <input type="text" class="form-control" placeholder="Card issue credit account number..."
-                        [formControlName]="'cardIssueCreditAccountNumber'" matInput>
+                    <input type="text" class="form-control" placeholder="Reason Code..."
+                        [formControlName]="'reasonCode'" matInput>
                 </mat-form-field>
             </span>
             <span class="sm:col-span-4">
-                <mat-label>Card funding debit account number
+                <mat-label>Debit Detail Record Record Type
                 </mat-label>
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <input type="text" class="form-control" placeholder="Card funding debit account number..."
-                        [formControlName]="'cardFundingDebitAccountNumber'" matInput>
+                        [formControlName]="'debitDetailRecordRecordType'" matInput>
                 </mat-form-field>
             </span>
             <span class="sm:col-span-4">
-                <mat-label>Card funding credit account number
+                <mat-label>Trailer RecordType
                 </mat-label>
                 <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <input type="text" class="form-control" placeholder="Card funding credit account number..."
-                        [formControlName]="'cardFundingCreditAccountNumber'" matInput>
+                    <input type="text" class="form-control" placeholder="Trailer RecordType..."
+                        [formControlName]="'trailerRecordRecordType'" matInput>
                 </mat-form-field>
             </span>
             <span class="sm:col-span-4">
-                <mat-label>Card defunding debit account number
+                <mat-label>Payment Indicator
+                </mat-label>
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <input type="text" class="form-control" placeholder="Payment Indicator..."
+                        [formControlName]="'paymentIndicator'" matInput>
+                </mat-form-field>
+            </span>
+            <span class="sm:col-span-4">
+                <mat-label>Filename
                 </mat-label>
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <input type="text" class="form-control" placeholder="Card defunding debit account number..."
-                        [formControlName]="'cardDefundingDebitAccountNumber'" matInput>
+                        [formControlName]="'fileName'" matInput>
                 </mat-form-field>
-            </span>
-            <span class="sm:col-span-4">
-                <mat-label>Card defunding credit account number
-                </mat-label>
-                <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <input type="text" class="form-control" placeholder="Card defunding debit account number..."
-                        [formControlName]="'cardDefundingDebitAccountNumber'" matInput>
-                </mat-form-field>
-            </span>
-            <span class="sm:col-span-4">
-                <mat-label>Flex Cube Web Service Uri
-                </mat-label>
-                <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <input type="text" class="form-control" placeholder="Flex Cube Web Service Uri..."
-                        [formControlName]="'flexCubeWebServiceUri'" matInput>
-                </mat-form-field>
-            </span>
-            <span class="sm:col-span-4">
-                <mat-label>SFTP Payment file path
-                </mat-label>
-                <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <input type="text" class="form-control" placeholder="SFTP Payment file path..."
-                        [formControlName]="'sFTPPaymentFilePath'" matInput>
-                </mat-form-field>
-            </span>
-            <span class="sm:col-span-4">
-                <mat-label>Branch ID
-                </mat-label>
-                <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <input type="text" class="form-control" placeholder="Banch ID..." [formControlName]="'branch'"
-                        matInput>
-                </mat-form-field>
-            </span>
-
+            </span>  
 
         </div>       
 
@@ -112,12 +106,11 @@
 
         <!-- Actions -->
         <div class="flex items-center justify-end">
-            
-            <button (click)="onSave()" class="ml-4" mat-flat-button type="button" [color]="'primary'">Save
+            <button *ngIf ='showCreate' (click)="onSave()" class="ml-4" mat-flat-button type="button" [color]="'primary'">Create
+            </button>
+            <button *ngIf ='showSave' (click)="onSave()" class="ml-4" mat-flat-button type="button" [color]="'primary'">Save
             </button>
         </div>
     </form>
 
 </div>
-
-

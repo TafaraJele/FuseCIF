@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core'
 import { CIFConfiguration } from 'app/shared/models/cif-configuration.model'
 import { FileApproval } from 'app/shared/models/file-approval.model'
 import { FileMetadata } from 'app/shared/models/filemetadata.model'
+import { PaymentFileConfiguration } from 'app/shared/models/payment-file-config'
 import { UploadResponse } from 'app/shared/models/upload-reponse'
 import { environment } from 'environments/environment'
 import { BehaviorSubject, Observable } from 'rxjs'
@@ -58,6 +59,13 @@ export class FileService {
 
     addSettings(settings: Partial<CIFConfiguration>): Observable<any> {
         return this._httpClient.post(baseUrl + '/api/configuration/settings', settings, httpOptions)
+    }
+
+    addPaymentFileSettings(settings: Partial<PaymentFileConfiguration>): Observable<any> {
+        return this._httpClient.post(baseUrl + '/api/PaymentsConfiguration/api/payments-configuration', settings, httpOptions)
+    }
+    getPaymentFileSettings(): Observable<any> {
+        return this._httpClient.get(baseUrl + '/api/PaymentsConfiguration/api/payments-configuration', httpOptions)
     }
 
     updateSettings(changes: Partial<CIFConfiguration>): Observable<any> {

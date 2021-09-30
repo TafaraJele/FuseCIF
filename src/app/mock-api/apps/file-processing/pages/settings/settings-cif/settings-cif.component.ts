@@ -35,13 +35,7 @@ export class SettingsCifComponent implements OnInit {
     this.showForm = false
     this.showSave = false
     this.showCreate = false
-    this.service.loadSettings().subscribe(settings => {
-      if (settings) {
-
-        this.allsettings = settings
-       
-      }
-    })
+    this.loadSettings()
   }
 
   patchForm(): any {    
@@ -88,13 +82,7 @@ export class SettingsCifComponent implements OnInit {
         debugger
         this.filteredSettings = res.resource
         this.notifyService.showNotification('success','Settings successfully saved','OK')
-        this.service.loadSettings().subscribe(settings => {
-          if (settings) {
-    
-            this.allsettings = settings
-           
-          }
-        })
+        this.loadSettings()
        
       }
       else{
@@ -105,13 +93,14 @@ export class SettingsCifComponent implements OnInit {
 
   ShowSettingsForm(channel: string){
 
+    this.loadSettings()
     if(channel === "FIDELITY"){
-      debugger
+     
       this.setChannelForm(channel)
 
     }
     if(channel ==="EZPAY"){
-      debugger
+     
       this.setChannelForm(channel)     
 
     }
@@ -176,7 +165,20 @@ export class SettingsCifComponent implements OnInit {
           
         }  
       }
+      else{
 
+        this.setFormIntialValues(channel)
+      }     
+
+  }
+
+  loadSettings(){
+       this.service.loadSettings().subscribe(settings => {
+
+      if (settings) {
+        this.allsettings = settings       
+      }
+    })
   }
 
 }
