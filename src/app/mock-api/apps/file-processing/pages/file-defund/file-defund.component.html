@@ -94,7 +94,8 @@
                                     <span
                                         class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
                                         [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': request.status === 'Error',
-                                                'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.status === 'ChargeSuccess'}">
+                                                'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.status === 'ChargeSuccess',
+                                                'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':request.status === 'NotCharged'}">
                                         <span class="leading-relaxed whitespace-nowrap">{{request.status}}</span>
                                     </span>
                                 </div>
@@ -104,7 +105,8 @@
                                     <span
                                         class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
                                         [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': request.creditStatus === 'Error',
-                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.creditStatus === 'Success'}">
+                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.creditStatus === 'Success',
+                                            'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':request.creditStatus === 'NotCharged'}">
                                         <span class="leading-relaxed whitespace-nowrap">{{request.creditStatus}}</span>
                                     </span>
                                 </div>
@@ -112,7 +114,8 @@
                                     <span
                                         class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
                                         [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': request.debitStatus === 'Error',
-                                                'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.debitStatus === 'Success'}">
+                                                'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.debitStatus === 'Success',
+                                                'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':request.debitStatus === 'NotCharged'}">
                                         <span class="leading-relaxed whitespace-nowrap">{{request.debitStatus}}</span>
                                     </span>
 

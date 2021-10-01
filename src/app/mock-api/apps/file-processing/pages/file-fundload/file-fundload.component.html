@@ -131,7 +131,7 @@
                         </mat-card>
                         <mat-card class="loading-data my-2" id='cover-card'
                             *ngIf="successfulFundRequests != undefined && successfulFundRequests.length == 0">
-                            No error fund requests...
+                            No successful or received fund requests...
                         </mat-card>
                         <mat-paginator *ngIf="successfulFundRequests.length > 0" [length]="successfulFundRequests.length" [pageSize]="5"
                             [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
@@ -165,7 +165,8 @@
                                     <span
                                         class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
                                         [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': request.status === 'Error',
-                                                'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.status === 'ChargeSuccess'}">
+                                                'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.status === 'ChargeSuccess',
+                                                'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':request.status === 'NotCharged' }">
                                         <span class="leading-relaxed whitespace-nowrap">{{request.status}}</span>
                                     </span>
                                 </div>
@@ -175,7 +176,8 @@
                                     <span
                                         class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
                                         [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': request.creditStatus === 'Error',
-                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.creditStatus === 'Success'}">
+                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.creditStatus === 'Success',
+                                            'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':request.creditStatus === 'NotCharged'}">
                                         <span class="leading-relaxed whitespace-nowrap">{{request.creditStatus}}</span>
                                     </span>
 
@@ -184,7 +186,8 @@
                                     <span
                                         class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
                                         [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': request.debitStatus === 'Error',
-                                                'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.debitStatus === 'Success'}">
+                                                'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.debitStatus === 'Success',
+                                                'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':request.debitStatus === 'NotCharged'}">
                                         <span class="leading-relaxed whitespace-nowrap">{{request.debitStatus}}</span>
                                     </span>
 

@@ -62,10 +62,10 @@ export class FileService {
     }
 
     addPaymentFileSettings(settings: Partial<PaymentFileConfiguration>): Observable<any> {
-        return this._httpClient.post(baseUrl + '/api/PaymentsConfiguration/api/payments-configuration', settings, httpOptions)
+        return this._httpClient.post(baseUrl + '/api/payments-configuration', settings, httpOptions)
     }
     getPaymentFileSettings(): Observable<any> {
-        return this._httpClient.get(baseUrl + '/api/PaymentsConfiguration/api/payments-configuration', httpOptions)
+        return this._httpClient.get(baseUrl + '/api/payments-configuration', httpOptions)
     }
 
     updateSettings(changes: Partial<CIFConfiguration>): Observable<any> {

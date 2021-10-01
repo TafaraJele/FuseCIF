@@ -1,0 +1,28 @@
+.circle{
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: dodgerblue ;
+    margin-top: 8px;
+    margin-right: 5px;
+    
+  }
+  .loading-data{
+    text-align:  center;
+    font-style:italic;
+   }
+
+   .approvedCircle{
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color:green ;
+    margin-top: 8px;
+    margin-right: 5px;
+    
+  }
+
+  .file-input{
+    display: none;
+
+  }

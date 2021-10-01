@@ -137,7 +137,7 @@ export class FileFundloadComponent implements OnInit {
     this.service.loadFileFundRequests(this.file.batchNumber).subscribe(fundrequests => {
 
       this.fundrequests = fundrequests
-debugger
+
       if (this.fundrequests && this.fundrequests.length > 0) {
         this.successfulFundRequests = this.fundrequests.filter(c => c.status === "ChargeSuccess" || c.status === "Received")
         this.errorsFundRequests = this.fundrequests.filter(c => c.status === "Error")
@@ -160,6 +160,9 @@ debugger
         this.errorsFundRequests = this.fundrequests.filter(c => c.status === "Error")
 
       }
+      if(this.errorsFundRequests && this.fundrequests.length > 0){
+        this.showResubmit = true
+      }
       this.filteredFundRequests = this.errorsFundRequests
       this.successPageSlice = this.successfulFundRequests.slice(0, 5)
       this.errorPageSlice = this.errorsFundRequests.slice(0, 5)
@@ -170,7 +173,8 @@ debugger
   onApprove() {
     this.showApprove = false
     this.service.approveFundOrDefund(this.file).subscribe(response => {
-     
+      this.refreshSuccessFundRequests()
+      this.refreshErrorFundRequests()
       if (response.accepted) {
         this.file = response.resource
         this.notifyService.showNotification('success', 'Fund load approved sucessfully', 'OK')        

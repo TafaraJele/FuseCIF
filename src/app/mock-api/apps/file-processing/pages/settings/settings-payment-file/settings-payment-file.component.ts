@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { PaymentFileConfiguration } from 'app/shared/models/payment-file-config';
 import { NotificationsService } from 'app/shared/notifications/notifications.service';
 import { FileService } from '../../../services/files.service';
@@ -15,7 +15,7 @@ export class SettingsPaymentFileComponent implements OnInit {
   allsettings:PaymentFileConfiguration[] = []
   filteredSettings:PaymentFileConfiguration[] = []
   settings: PaymentFileConfiguration
-  settingsForm: FormGroup
+  settingsForm: FormGroup 
   showMsg: boolean = false
   showForm: boolean
   showCreate: boolean
@@ -27,6 +27,16 @@ export class SettingsPaymentFileComponent implements OnInit {
     private service: FileService,
     private notifyService : NotificationsService) {
     this.settings = new PaymentFileConfiguration
+    // this.settingsForm = new FormGroup({
+    //   productName: new FormControl('')
+
+
+    // }
+     
+
+
+    // )
+    this.setFormIntialValues("")
    
   }
 
@@ -34,6 +44,7 @@ export class SettingsPaymentFileComponent implements OnInit {
     this.showForm = false
     this.showSave = false
     this.showCreate = false
+    this.setFormIntialValues("")
     this.loadSettings()
   }
 
@@ -87,6 +98,7 @@ export class SettingsPaymentFileComponent implements OnInit {
   ShowSettingsForm(productName: string){
 
     this.loadSettings()
+    debugger
     if(productName === "MASTERCARD_PREPAID"){
      
       this.setproductNameForm(productName)

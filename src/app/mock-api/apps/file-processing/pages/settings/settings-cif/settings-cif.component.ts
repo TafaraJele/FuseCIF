@@ -28,6 +28,7 @@ export class SettingsCifComponent implements OnInit {
     private service: FileService,
     private notifyService : NotificationsService) {
     this.settings = new CIFConfiguration
+    this.setFormIntialValues('')
    
   }
 
@@ -35,6 +36,7 @@ export class SettingsCifComponent implements OnInit {
     this.showForm = false
     this.showSave = false
     this.showCreate = false
+    this.setFormIntialValues('')
     this.loadSettings()
   }
 

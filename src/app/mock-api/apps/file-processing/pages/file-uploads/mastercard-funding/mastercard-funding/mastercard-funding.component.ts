@@ -36,6 +36,8 @@ export class MastercardFundingComponent implements OnInit {
   searchInputControl: FormControl = new FormControl();
   uploadResponse: UploadResponse
   uploadErrorResponse: UploadErrorResponse[] = []
+  fileName = ''
+  @ViewChild('fileUpload') fileUpload;
 
   mapOfSort: { [key: string]: any } = {
     file: null,
@@ -137,102 +139,118 @@ export class MastercardFundingComponent implements OnInit {
   UploadFundRequestFile(event) {
 
     var file = event.target.files[0];
-    const formData: FormData = new FormData();
-    formData.append('FileContent', file, file.name)
+    if (file) {
+      this.fileName = file.name
+      const formData: FormData = new FormData();
+      formData.append('FileContent', file, file.name)
 
-    this.service.UploadFile(formData).subscribe(response => {
+      this.service.UploadFile(formData).subscribe(response => {
 
-      if (response) {
-        this.uploadResponse = response
+        if (response) {
+          this.uploadResponse = response
 
-        this.service.changeResponse(this.uploadResponse)
-        //   let dialogRef = this.dialog.open(UploadResponsesComponent, {
-        //     height: '400px',
-        //     width: '600px',
-        //   });
-        // Open the dialog and save the reference of it
-        const dialogRef = this._fuseConfirmationService.open(
+          this.service.changeResponse(this.uploadResponse)
+          //   let dialogRef = this.dialog.open(UploadResponsesComponent, {
+          //     height: '400px',
+          //     width: '600px',
+          //   });
+          // Open the dialog and save the reference of it
+          const dialogRef = this._fuseConfirmationService.open(
 
-          {
-            "title": response.message + "!!!",
-            "subtitle": "File batch number:" + response.batchNumber,
-            "message": "File reference number:" + response.fileReferenceNumber,
-            "icon": {
-              "show": true,
-              "name": "heroicons_outline:check",
-              "color": "success"
-            },
-            "actions": {
-              "confirm": {
+            {
+              "title": response.message + "!!!",
+              "subtitle": "File batch number:" + response.batchNumber,
+              "message": "File reference number:" + response.fileReferenceNumber,
+              "icon": {
                 "show": true,
-                "label": "OK",
+                "name": "heroicons_outline:check",
                 "color": "success"
               },
-              "cancel": {
-                "show": false,
-                "label": 'Cancel'
-              }
+              "actions": {
+                "confirm": {
+                  "show": true,
+                  "label": "OK",
+                  "color": "success"
+                },
+                "cancel": {
+                  "show": false,
+                  "label": 'Cancel'
+                }
 
-            },
+              },
 
-            "dismissible": true
-          }
-
-        );
-
-        // Subscribe to afterClosed from the dialog reference
-        this.service.loadFidelityFiles().subscribe(files => {
-
-          if (files) {
-
-            this.files = files.filter(c => c.requestType == 'cardfunding')
-            this.approvedFiles = this.files.filter(c => c.status == 'Approved')
-            this.receivedFiles = this.files.filter(c => c.status == 'Received')
-            this.filteredFiles = this.receivedFiles
-            this.approvedPageSlice = this.approvedFiles.slice(0, 5)
-            this.receivedPageSlice = this.receivedFiles.slice(0, 5)
-
-          }
-        })
-
-      }  
-    },
-    httpErrorResponse => {
-      debugger
-      this.uploadErrorResponse = httpErrorResponse.error
-      const dialogRef = this._fuseConfirmationService.open(
-
-        {
-          "title": "Error !!!",
-          "subtitle":"",
-          "message": this.uploadErrorResponse[0].message,
-          "icon": {
-            "show": true,
-            "name": "heroicons_outline:exclamation",
-            "color": "warn"
-          },
-          "actions": {
-            "confirm": {
-              "show": true,
-              "label": "OK",
-              "color": "warn"
-            },
-            "cancel": {
-              "show": false,
-              "label": 'Cancel'
+              "dismissible": true
             }
 
-          },
+          );
 
-          "dismissible": true
+          // Subscribe to afterClosed from the dialog reference
+          this.service.loadFidelityFiles().subscribe(files => {
+
+            if (files) {
+
+              this.files = files.filter(c => c.requestType == 'carddefunding')
+              this.approvedFiles = this.files.filter(c => c.status == 'Approved')
+              this.receivedFiles = this.files.filter(c => c.status == 'Received')
+              this.filteredFiles = this.receivedFiles
+              this.approvedPageSlice = this.approvedFiles.slice(0, 5)
+              this.receivedPageSlice = this.receivedFiles.slice(0, 5)
+
+            }
+          })
+
+        }
+      },
+        httpErrorResponse => {
+          debugger
+          var message = ""
+          if (httpErrorResponse.status == 500) {
+            message = httpErrorResponse.error
+          }
+          else if(httpErrorResponse.status == 0){
+            message = httpErrorResponse.message
+          } 
+          else
+          {
+            this.uploadErrorResponse = httpErrorResponse.error
+            message = this.uploadErrorResponse[0].message
+          }
+
+          const dialogRef = this._fuseConfirmationService.open(
+
+            {
+              "title": "Error !!!",
+              "subtitle": "",
+              "message": message,
+              "icon": {
+                "show": true,
+                "name": "heroicons_outline:exclamation",
+                "color": "warn"
+              },
+              "actions": {
+                "confirm": {
+                  "show": true,
+                  "label": "OK",
+                  "color": "warn"
+                },
+                "cancel": {
+                  "show": false,
+                  "label": 'Cancel'
+                }
+
+              },
+
+              "dismissible": true
+            }
+
+          );
         }
 
-      );
+      )
+      this.fileUpload.nativeElement.value = ""
+
     }
-    
 
-
-    )
 
 
   }
