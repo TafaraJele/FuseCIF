@@ -21,9 +21,9 @@ export class FileDefundComponent implements OnInit {
   fileId: any
   defundrequests: FundRequest[] = []
   isSidebarOpen: boolean
-  filteredDefundRequests: FundRequest[]  = []
-  successfulDefundRequests: FundRequest[]  = []
-  errorsDefundRequests: FundRequest[]  = []
+  filteredDefundRequests: FundRequest[] = []
+  successfulDefundRequests: FundRequest[] = []
+  errorsDefundRequests: FundRequest[] = []
   listOfSearchName: string[] = []
   listOfSearchAddress: string[] = []
   showResubmit = false
@@ -31,8 +31,8 @@ export class FileDefundComponent implements OnInit {
   showMsg = false
   message: string
   searchInputControl: FormControl = new FormControl()
-  successPageSlice: any[]  = []
-  errorPageSlice: any[]  = []
+  successPageSlice: any[] = []
+  errorPageSlice: any[] = []
   showApprove: boolean
 
   mapOfSort: { [key: string]: any } = {
@@ -144,9 +144,13 @@ export class FileDefundComponent implements OnInit {
   }
   onApprove() {
     this.showApprove = false
-    this.service.approveFile(this.file).subscribe(response => {
+    this.notifyService.showNotification('notification', 'Fund load is being approved. Please wait', '')
+    this.service.approveFundOrDefund(this.file).subscribe(response => {
       this.file = response.resource
       if (response.accepted) {
+
+        this.refreshSuccessDefundRequests()
+        this.refreshErrorDefundRequests()
         this.notifyService.showNotification('success', 'Funds load approved successfully!!!', 'OK')
 
       }
@@ -192,6 +196,7 @@ export class FileDefundComponent implements OnInit {
       this.errorPageSlice = this.errorsDefundRequests.slice(0, 5)
       if (this.errorsDefundRequests.length > 0) {
         this.showResubmit = true
+        this.showApprove = false
 
       }
       else {

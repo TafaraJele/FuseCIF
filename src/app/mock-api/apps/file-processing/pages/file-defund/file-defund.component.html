@@ -19,8 +19,8 @@
                 <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
                     [placeholder]="'Search card requests'">
             </mat-form-field>
-             <!-- Approve button -->
-             <button *ngIf='showApprove' class="ml-4 bg-green-200" mat-flat-button (click)="onApprove()">
+            <!-- Approve button -->
+            <button *ngIf='showApprove' class="ml-4 bg-green-200" mat-flat-button (click)="onApprove()">
                 <mat-icon [svgIcon]="'heroicons_outline:check'"></mat-icon>
                 <span class="ml-2 mr-1">Approve</span>
             </button>
@@ -95,7 +95,8 @@
                                         class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
                                         [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': request.status === 'Error',
                                                 'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.status === 'ChargeSuccess',
-                                                'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':request.status === 'NotCharged'}">
+                                                'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':request.status === 'Received'
+                                        }">
                                         <span class="leading-relaxed whitespace-nowrap">{{request.status}}</span>
                                     </span>
                                 </div>
@@ -125,15 +126,17 @@
                         </mat-card>
 
 
-                        <mat-card class="loading-data my-2" id='cover-card' *ngIf="successfulDefundRequests == undefined">
-                            Loading data... 
+                        <mat-card class="loading-data my-2" id='cover-card'
+                            *ngIf="successfulDefundRequests == undefined">
+                            Loading data...
                         </mat-card>
                         <mat-card class="loading-data my-2" id='cover-card'
                             *ngIf="successfulDefundRequests != undefined && successfulDefundRequests.length == 0">
                             No error defund requests...
                         </mat-card>
-                        <mat-paginator *ngIf="successfulDefundRequests.length > 0" [length]="successfulDefundRequests.length" [pageSize]="5"
-                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
+                        <mat-paginator *ngIf="successfulDefundRequests.length > 0"
+                            [length]="successfulDefundRequests.length" [pageSize]="5" [pageSizeOptions]="[5,10,25,100]"
+                            (page)="OnPageChange($event)">
                         </mat-paginator>
 
                     </mat-tab>
@@ -160,14 +163,34 @@
                                     </div>
 
                                 </div>
-                                <div class="col-start-3 col-end-4"> {{request.status}}</div>
+                                <div class="col-start-3 col-end-4">
+                                    <span
+                                        class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                                        [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': request.status === 'Error',
+                                                'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.status === 'ChargeSuccess',
+                                                'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':request.status === 'NotCharged' || 'Received' }">
+                                        <span class="leading-relaxed whitespace-nowrap">{{request.status}}</span>
+                                    </span>
+                                </div>
                                 <div class="col-start-5 col-end-6"> {{request.amount}}</div>
                                 <div class="col-start-7 col-end-8"> {{ request.accountNumber}}</div>
                                 <div class="col-start-9 col-end-10">
-                                    {{request.creditStatus}}
+                                    <span
+                                        class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                                        [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': request.creditStatus === 'Error',
+                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.creditStatus === 'Success',
+                                            'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':request.creditStatus === 'NotCharged'}">
+                                        <span class="leading-relaxed whitespace-nowrap">{{request.creditStatus}}</span>
+                                    </span>
                                 </div>
                                 <div class="col-start-11">
-                                    {{request.debitStatus}}
+                                    <span
+                                    class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                                    [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': request.debitStatus === 'Error',
+                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': request.debitStatus === 'Success',
+                                            'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':request.debitStatus === 'NotCharged'}">
+                                    <span class="leading-relaxed whitespace-nowrap">{{request.debitStatus}}</span>
+                                </span>
                                 </div>
                             </div>
 
@@ -175,14 +198,14 @@
 
 
                         <mat-card class="loading-data my-2" id='cover-card' *ngIf="errorsDefundRequests == undefined">
-                            Loading data... 
+                            Loading data...
                         </mat-card>
                         <mat-card class="loading-data my-2" id='cover-card'
                             *ngIf="errorsDefundRequests != undefined && errorsDefundRequests.length == 0">
                             No error defund requests...
                         </mat-card>
-                        <mat-paginator *ngIf="errorsDefundRequests.length > 0" [length]="errorsDefundRequests.length" [pageSize]="5"
-                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
+                        <mat-paginator *ngIf="errorsDefundRequests.length > 0" [length]="errorsDefundRequests.length"
+                            [pageSize]="5" [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
                         </mat-paginator>
 
                     </mat-tab>

@@ -189,7 +189,7 @@ export class MastercardFundingComponent implements OnInit {
 
             if (files) {
 
-              this.files = files.filter(c => c.requestType == 'carddefunding')
+              this.files = files.filter(c => c.requestType == 'cardfunding')
               this.approvedFiles = this.files.filter(c => c.status == 'Approved')
               this.receivedFiles = this.files.filter(c => c.status == 'Received')
               this.filteredFiles = this.receivedFiles
@@ -202,7 +202,7 @@ export class MastercardFundingComponent implements OnInit {
         }
       },
         httpErrorResponse => {
-          debugger
+         
           var message = ""
           if (httpErrorResponse.status == 500) {
             message = httpErrorResponse.error

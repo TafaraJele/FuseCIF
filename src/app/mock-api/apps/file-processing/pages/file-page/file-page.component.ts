@@ -197,7 +197,7 @@ export class FilePageComponent implements OnInit {
   viewCards(): any {
 
     this.showResubmit = false
-    this.activeKey = 4
+    
     this.service.loadFileCards(this.file.batchNumber).subscribe(cards => {
       if (cards) {
         this.cards = cards
@@ -211,6 +211,7 @@ export class FilePageComponent implements OnInit {
 
         if (this.cardChargeDebitError.length > 0 || this.cardChargeCreditError.length > 0 || this.cardRequestFailed.length > 0) {
           this.showResubmitCard = true
+          this.showApprove = false
 
         }
         else {
@@ -218,6 +219,8 @@ export class FilePageComponent implements OnInit {
         }
         
       }
+
+      this.cardsPageSlice = this.cards.slice(0,5)
     })
   }
   GetCustomers(): any {

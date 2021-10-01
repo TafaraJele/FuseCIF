@@ -79,9 +79,9 @@ export class SettingsCifComponent implements OnInit {
 
     this.service.addSettings(this.settings).subscribe(res => {
 
-      this.notifyService.showNotification('notifications','Settings are being saved','')
+      this.notifyService.showNotification('notification','Settings are being saved','')
       if (res.accepted) {
-        debugger
+      
         this.filteredSettings = res.resource
         this.notifyService.showNotification('success','Settings successfully saved','OK')
         this.loadSettings()
@@ -153,7 +153,7 @@ export class SettingsCifComponent implements OnInit {
       this.channel = channel
 
       if(this.allsettings && this.allsettings.length > 0){
-        debugger
+        
         this.filteredSettings = this.allsettings.filter(c => c.channel === channel)
         this.settings = this.filteredSettings[0]
 

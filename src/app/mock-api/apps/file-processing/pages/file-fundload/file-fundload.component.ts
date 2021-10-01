@@ -160,8 +160,12 @@ export class FileFundloadComponent implements OnInit {
         this.errorsFundRequests = this.fundrequests.filter(c => c.status === "Error")
 
       }
-      if(this.errorsFundRequests && this.fundrequests.length > 0){
+      if(this.errorsFundRequests && this.errorsFundRequests.length > 0 ){
         this.showResubmit = true
+        this.showApprove = false
+      }
+      else{
+        this.showResubmit = false
       }
       this.filteredFundRequests = this.errorsFundRequests
       this.successPageSlice = this.successfulFundRequests.slice(0, 5)
@@ -172,10 +176,12 @@ export class FileFundloadComponent implements OnInit {
   }
   onApprove() {
     this.showApprove = false
+    this.notifyService.showNotification('notification', 'Fund load is being approved. Please wait', '') 
     this.service.approveFundOrDefund(this.file).subscribe(response => {
       this.refreshSuccessFundRequests()
       this.refreshErrorFundRequests()
-      if (response.accepted) {
+
+      if (response.accepted) {        
         this.file = response.resource
         this.notifyService.showNotification('success', 'Fund load approved sucessfully', 'OK')        
       }
@@ -187,19 +193,7 @@ export class FileFundloadComponent implements OnInit {
     })
 
   }
-
-  loadFile(): any {
-
-    if (this.fileId) {
-      this.store.pipe(select(selectFile(this.fileId))).subscribe(file => {
-
-        if (file) {
-          this.file = file
-          //this.loadFundRequests()
-        }
-      })
-    }
-  }
+  
   viewSuccess(): any {
     this.showMsg = false
     this.showResubmit = false

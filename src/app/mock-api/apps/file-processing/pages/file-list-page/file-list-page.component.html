@@ -54,10 +54,71 @@
     <!-- Main -->
     <div class="flex flex-auto overflow-hidden">
 
-        <!-- Products list -->
+        <!-- Card request file list -->
         <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
             <ng-container>
                 <mat-tab-group class="mt-4">
+                    <!-- Card request file list with status Received-->
+                    <mat-tab label="Received">
+
+                        <mat-card id='cover-card' class='bg-indigo-200'>
+                            <div class="grid grid-cols-12 gap-1">
+                                <div class="col-start-1 col-end-4"> File Reference </div>
+                                <div class="col-start-5 "> Priority</div>
+                                <div class="col-start-6 col-end-7"> Batch No.#</div>
+                                <div class="col-start-8  col-end-10"> Uploaded Date</div>
+                                <div class="col-start-10">Status</div>
+                                <div class="col-start-12"></div>
+                            </div>
+                        </mat-card>
+
+                        <mat-card id='cover-card' *ngFor='let file of receivedPageSlice' class="my-2">
+                            <div class="grid grid-cols-12 gap-1 ">
+                                <div class="col-start-1 col-end-4">
+
+                                    <div class="flex flex-row ...">
+
+                                        <div class="circle"> </div> {{file.fileReference}}
+
+                                    </div>
+
+                                </div>
+                                <div class="col-start-5"> {{file.priority}}</div>
+                                <div class="col-start-6 col-end-7"> {{file.batchNumber}}</div>
+                                <div class="col-start-8 col-end-10 "> {{file.date | date }}</div>
+                                <div class="col-start-10"> 
+                                    <span
+                                        class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                                        [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': file.status === 'AmlockError',
+                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': file.status === 'Approved',
+                                            'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':file.status === 'Received'
+                                        }">
+                                        <span class="leading-relaxed whitespace-nowrap"> {{file.status}}</span>
+                                    </span>
+                                </div>
+                                <div class="col-start-12">
+                                    <a (click)="ViewFileDetails(file)"
+                                        *ngIf="(file.status !== 'Loading')">
+                                        <mat-icon svgIcon="heroicons_outline:pencil-alt"></mat-icon>
+                                        View
+                                    </a>
+                                </div>
+                            </div>
+
+                        </mat-card>
+
+                        <mat-card class="loading-data my-2" id='cover-card' *ngIf="files == undefined">
+                             Loading data... 
+                        </mat-card>
+                        <mat-card class="loading-data my-2" id='cover-card' *ngIf="receivedFiles != undefined && receivedFiles.length == 0">
+                            No received files...
+                        </mat-card>
+                        <mat-paginator *ngIf="receivedFiles.length > 0" [length]="receivedFiles.length" [pageSize]="5"
+                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
+                        </mat-paginator>
+
+                    </mat-tab>
+                     <!-- Card request file list with status Approved-->
                     <mat-tab label="Approved" >
                         <mat-card id='cover-card' class='bg-indigo-200'>
                             <div class="grid grid-cols-12 gap-1">
@@ -117,65 +178,7 @@
                         </mat-paginator>
 
                     </mat-tab>
-                    <mat-tab label="Received">
-                        <mat-card id='cover-card' class='bg-indigo-200'>
-                            <div class="grid grid-cols-12 gap-1">
-                                <div class="col-start-1 col-end-4"> File Reference </div>
-                                <div class="col-start-5 "> Priority</div>
-                                <div class="col-start-6 col-end-7"> Batch No.#</div>
-                                <div class="col-start-8  col-end-10"> Uploaded Date</div>
-                                <div class="col-start-10">Status</div>
-                                <div class="col-start-12"></div>
-                            </div>
-                        </mat-card>
-
-                        <mat-card id='cover-card' *ngFor='let file of receivedPageSlice' class="my-2">
-                            <div class="grid grid-cols-12 gap-1 ">
-                                <div class="col-start-1 col-end-4">
-
-                                    <div class="flex flex-row ...">
-
-                                        <div class="circle"> </div> {{file.fileReference}}
-
-                                    </div>
-
-                                </div>
-                                <div class="col-start-5"> {{file.priority}}</div>
-                                <div class="col-start-6 col-end-7"> {{file.batchNumber}}</div>
-                                <div class="col-start-8 col-end-10 "> {{file.date | date }}</div>
-                                <div class="col-start-10"> 
-                                    <span
-                                        class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
-                                        [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': file.status === 'AmlockError',
-                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': file.status === 'Approved',
-                                            'bg-blue-400 text-blue-800 dark:bg-blue-400 dark:text-blue-50':file.status === 'Received'
-                                        }">
-                                        <span class="leading-relaxed whitespace-nowrap"> {{file.status}}</span>
-                                    </span>
-                                </div>
-                                <div class="col-start-12">
-                                    <a (click)="ViewFileDetails(file)"
-                                        *ngIf="(file.status !== 'Loading')">
-                                        <mat-icon svgIcon="heroicons_outline:pencil-alt"></mat-icon>
-                                        View
-                                    </a>
-                                </div>
-                            </div>
-
-                        </mat-card>
-
-
-                        <mat-card class="loading-data my-2" id='cover-card' *ngIf="files == undefined">
-                             Loading data... 
-                        </mat-card>
-                        <mat-card class="loading-data my-2" id='cover-card' *ngIf="receivedFiles != undefined && receivedFiles.length == 0">
-                            No received files...
-                        </mat-card>
-                        <mat-paginator *ngIf="receivedFiles.length > 0" [length]="receivedFiles.length" [pageSize]="5"
-                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
-                        </mat-paginator>
-
-                    </mat-tab>
+                    
 
                 </mat-tab-group>
 

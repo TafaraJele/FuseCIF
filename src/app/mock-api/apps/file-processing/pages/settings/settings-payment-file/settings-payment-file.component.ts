@@ -81,9 +81,9 @@ export class SettingsPaymentFileComponent implements OnInit {
 
     this.service.addPaymentFileSettings(this.settings).subscribe(res => {
 
-      this.notifyService.showNotification('notifications','Settings are being saved','')
+      this.notifyService.showNotification('notification','Settings are being saved','')
       if (res.accepted) {
-        debugger
+       
         this.filteredSettings = res.resource
         this.notifyService.showNotification('success','Settings successfully saved','OK')
         this.loadSettings()
@@ -98,7 +98,7 @@ export class SettingsPaymentFileComponent implements OnInit {
   ShowSettingsForm(productName: string){
 
     this.loadSettings()
-    debugger
+    
     if(productName === "MASTERCARD_PREPAID"){
      
       this.setproductNameForm(productName)
@@ -151,7 +151,7 @@ export class SettingsPaymentFileComponent implements OnInit {
       this.productName = productName
 
       if(this.allsettings && this.allsettings.length > 0){
-        debugger
+        
         this.filteredSettings = this.allsettings.filter(c => c.productName === productName)
         this.settings = this.filteredSettings[0]
 

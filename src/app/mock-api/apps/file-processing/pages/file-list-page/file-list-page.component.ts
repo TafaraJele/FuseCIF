@@ -50,7 +50,7 @@ export class FileListPageComponent implements OnInit {
     
     // this.store.dispatch(new UserActions.LoadFiles())
     this.service.loadFiles().subscribe(files => {
-      debugger
+      
       if (files) {
 
         this.files = files.filter(c => c.requestType == 'cardrequest')

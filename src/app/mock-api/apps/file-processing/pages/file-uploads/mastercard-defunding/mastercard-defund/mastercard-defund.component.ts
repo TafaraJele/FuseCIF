@@ -191,7 +191,7 @@ export class MastercardDefundComponent implements OnInit {
       }
     },
       httpErrorResponse => {
-        debugger
+      
         var message = ""
         if(httpErrorResponse.status == 500)
         {
