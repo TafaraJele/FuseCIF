@@ -13,11 +13,17 @@
         <div class="text-4xl font-extrabold tracking-tight">Card Requests</div>
         <!-- Actions -->
         <div class="flex flex-shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+             <!-- Search by month or date -->
+             <mat-form-field  class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64 mr-10">
+                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>                
+                <input matInput  type = "text" [(ngModel)] = "searchMonthDate"
+                    [placeholder]="'Search by month/date'">
+            </mat-form-field>
             <!-- Search -->
-            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
-                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
-                    [placeholder]="'Search card requests'">
+            <mat-form-field  class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
+                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>                
+                <input matInput  type = "text" [(ngModel)] = "seachParameter"
+                    [placeholder]="'Search by file reference'">
             </mat-form-field>
             <!-- Download button -->
             <button class="ml-4" mat-flat-button [color]="'primary'" [matMenuTriggerFor]="currentStatementMenu">
@@ -72,7 +78,7 @@
                             </div>
                         </mat-card>
 
-                        <mat-card id='cover-card' *ngFor='let file of receivedPageSlice' class="my-2">
+                        <mat-card id='cover-card' *ngFor='let file of receivedPageSlice' class="my-2"  >
                             <div class="grid grid-cols-12 gap-1 ">
                                 <div class="col-start-1 col-end-4">
 
@@ -113,11 +119,14 @@
                         <mat-card class="loading-data my-2" id='cover-card' *ngIf="receivedFiles != undefined && receivedFiles.length == 0">
                             No received files...
                         </mat-card>
+                        <mat-card class="loading-data my-2" id='cover-card' *ngIf="receivedPageSlice != undefined && receivedPageSlice.length == 0 && receivedFiles.length != 0">
+                            Search files not found...
+                        </mat-card>
                         <mat-paginator *ngIf="receivedFiles.length > 0" [length]="receivedFiles.length" [pageSize]="5"
                             [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
                         </mat-paginator>
 
-                    </mat-tab>
+                    </mat-tab> 
                      <!-- Card request file list with status Approved-->
                     <mat-tab label="Approved" >
                         <mat-card id='cover-card' class='bg-indigo-200'>
@@ -172,6 +181,9 @@
                         </mat-card>
                         <mat-card class="loading-data my-2" id='cover-card' *ngIf="approvedFiles != undefined && approvedFiles.length == 0">
                             No approved files...
+                        </mat-card>
+                        <mat-card class="loading-data my-2" id='cover-card' *ngIf="approvedPageSlice != undefined && approvedPageSlice.length == 0 && approvedFiles.length != 0">
+                            Search files not found...
                         </mat-card>
                         <mat-paginator *ngIf="approvedFiles.length > 0" [length]="approvedFiles.length" [pageSize]="5"
                             [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">

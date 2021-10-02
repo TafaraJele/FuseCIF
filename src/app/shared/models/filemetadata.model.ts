@@ -10,4 +10,6 @@ export class FileMetadata {
     channel: string
     productName: string
     productCode: string
+    date:Date
+    searchDate:string
 }

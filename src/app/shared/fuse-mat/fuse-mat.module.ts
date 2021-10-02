@@ -65,7 +65,8 @@ const modules = [
   MatGridListModule,
   MatCardModule,
   MatSnackBarModule,
-  MatDialogModule
+  MatDialogModule,
+  
 
 ];
 @NgModule({

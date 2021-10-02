@@ -19,39 +19,23 @@ import { selectFile } from '../../store/selectors/files.selector';
 })
 export class FileFundloadComponent implements OnInit {
   @Input() file: any
-  fundrequests: FundRequest[] = []
-  isSidebarOpen: boolean
+  fundrequests: FundRequest[] = []  
   filteredFundRequests: FundRequest[] = []
   successfulFundRequests: FundRequest[] = []
-  errorsFundRequests: FundRequest[] = []
-  listOfSearchName: string[] = []
-  listOfSearchAddress: string[] = []
-  fileId: any
-  message: string
+  errorsFundRequests: FundRequest[] = []  
+  fileId: any 
   showResubmit = false
   activeKey = 0
   showMsg = false
   successPageSlice: any[] = []
   errorPageSlice: any[] = []
   showApprove: boolean 
-
-  mapOfSort: { [key: string]: any } = {
-    file: null,
-    batchNumber: null,
-    status: null,
-    fileReference: null,
-    timeSaved: null
-  }
-  sortName: string | null = null
-  sortValue: string | null = null
   batchNumber: any
-  searchInputControl: FormControl = new FormControl()
-
+  message:string
 
   constructor(private store: Store<AppState>,
     private service: FileService,
     private notifyService : NotificationsService) {
-
 
     if (this.file) {
       this.refreshSuccessFundRequests()
@@ -83,42 +67,7 @@ export class FileFundloadComponent implements OnInit {
       this.showApprove = true
     }
 
-  }
-  sort(sortName: string, value: string): void {
-    this.sortName = sortName
-    this.sortValue = value
-    for (const key in this.mapOfSort) {
-      if (this.mapOfSort.hasOwnProperty(key)) {
-        this.mapOfSort[key] = key === sortName ? value : null
-      }
-    }
-    this.search(this.listOfSearchName, this.listOfSearchAddress)
-  }
-  search(listOfSearchName: string[], listOfSearchAddress: string[]): void {
-    this.listOfSearchName = listOfSearchName
-    this.listOfSearchAddress = listOfSearchAddress
-    const filterFunc = item =>
-      (this.listOfSearchAddress.length
-        ? this.listOfSearchAddress.some(address => item.address.indexOf(address) !== -1)
-        : true) &&
-      (this.listOfSearchName.length
-        ? this.listOfSearchName.some(name => item.name.indexOf(name) !== -1)
-        : true)
-    const listOfData = this.fundrequests.filter(item => filterFunc(item))
-    if (this.sortName !== null && this.sortValue !== null) {
-      this.filteredFundRequests = listOfData.sort((a, b) =>
-        this.sortValue === 'ascend'
-          ? a[this.sortName] > b[this.sortName]
-            ? 1
-            : -1
-          : b[this.sortName] > a[this.sortName]
-            ? 1
-            : -1,
-      )
-    } else {
-      this.filteredFundRequests = this.fundrequests
-    }
-  }
+  } 
 
   OnPageChange(event: PageEvent) {
 

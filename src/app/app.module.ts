@@ -33,6 +33,7 @@ import { reducers, metaReducers } from './mock-api/store';
 import { FilePageManagerComponent } from './mock-api/apps/file-processing/pages/file-page-manager/file-page-manager.component';
 import { MastercardDefundComponent } from './mock-api/apps/file-processing/pages/file-uploads/mastercard-defunding/mastercard-defund/mastercard-defund.component';
 import { MastercardFundingComponent } from './mock-api/apps/file-processing/pages/file-uploads/mastercard-funding/mastercard-funding/mastercard-funding.component';
+import { DatePipe } from '@angular/common';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy: PreloadAllModules,
@@ -95,6 +96,7 @@ const routerConfig: ExtraOptions = {
         {
             provide : FilePageManagerComponent
         },
+        DatePipe
     ],
     bootstrap: [AppComponent],
 

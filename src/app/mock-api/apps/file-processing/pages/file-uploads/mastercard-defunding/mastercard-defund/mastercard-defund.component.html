@@ -13,46 +13,50 @@
         <div class="text-4xl font-extrabold tracking-tight">Mastercard Defund Requests</div>
         <!-- Actions -->
         <div class="flex flex-shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <!-- Search by file reference-->
+            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64 mr-10">
+                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                <input matInput type="text" [(ngModel)]="seachParameter" [placeholder]="'Search by file reference'">
+            </mat-form-field>
 
-            <!--File Upload-->            
+            <!--File Upload-->
             <input type="file" class="file-input" (change)="UploadFundRequestFile($event)" #fileUpload>
-            <span class="file-upload">              
-             
-                 <button mat-mini-fab color="warn" class="upload-btn"                
-                   (click)="fileUpload.click()">
-                     <mat-icon>attach_file</mat-icon>
-                 </button>
-                 <span> {{fileName || "Upload defund request file."}}</span>
-                </span>
+            <span class="file-upload">
+
+                <button mat-mini-fab color="warn" class="upload-btn" (click)="fileUpload.click()">
+                    <mat-icon>attach_file</mat-icon>
+                </button>
+                <span> {{fileName || "Upload defund request file."}}</span>
+            </span>
 
             <!-- Download button -->
-            <button class="ml-4" mat-flat-button [color]="'primary'" [matMenuTriggerFor]="currentStatementMenu" >
+            <button class="ml-4" mat-flat-button [color]="'primary'" [matMenuTriggerFor]="currentStatementMenu">
                 <mat-icon [svgIcon]="'heroicons_outline:download'"></mat-icon>
                 <span class="ml-2 mr-1">DownLoad</span>
             </button>
             <mat-menu #currentStatementMenu="matMenu">
                 <button mat-menu-item (click)="exportToCsv(undefined)">
                     <span class="flex items-center">
-                        
+
                         <span>All</span>
                     </span>
                 </button>
                 <mat-divider class="my-2"></mat-divider>
                 <button mat-menu-item (click)="exportToCsv('Approved')">
                     <span class="flex items-center">
-                        
+
                         <span>Approved</span>
                     </span>
-                </button>               
-               
+                </button>
+
                 <mat-divider class="my-2"></mat-divider>
-                <button mat-menu-item  (click)="exportToCsv('Received')">
-                    <span class="flex items-center">                        
+                <button mat-menu-item (click)="exportToCsv('Received')">
+                    <span class="flex items-center">
                         <span>Received</span>
                     </span>
                 </button>
-                <mat-divider class="my-2"></mat-divider>               
-                
+                <mat-divider class="my-2"></mat-divider>
+
             </mat-menu>
         </div>
     </div>
@@ -60,12 +64,12 @@
     <!-- Main -->
     <div class="flex flex-auto overflow-hidden">
 
-        <!-- Products list -->
+        <!-- mastr card defund list -->
         <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
             <ng-container>
-                <mat-tab-group class="mt-4" >
-                    <mat-tab label="Received" >
-                        <mat-card id='cover-card' class ='bg-indigo-200'>
+                <mat-tab-group class="mt-4">
+                    <mat-tab label="Received">
+                        <mat-card id='cover-card' class='bg-indigo-200'>
                             <div class="grid grid-cols-12 gap-1">
                                 <div class="col-start-1 col-end-4"> File Reference </div>
                                 <div class="col-start-5 "> Priority</div>
@@ -76,7 +80,7 @@
                             </div>
                         </mat-card>
 
-                        <mat-card id='cover-card' *ngFor='let file of receivedPageSlice' class="my-2" >
+                        <mat-card id='cover-card' *ngFor='let file of receivedPageSlice' class="my-2">
                             <div class="grid grid-cols-12 gap-1 ">
                                 <div class="col-start-1 col-end-4">
 
@@ -90,7 +94,7 @@
                                 <div class="col-start-5"> {{file.priority}}</div>
                                 <div class="col-start-6 col-end-7"> {{file.batchNumber}}</div>
                                 <div class="col-start-8 "> {{file.date | date }}</div>
-                                <div class="col-start-10"> 
+                                <div class="col-start-10">
                                     <span
                                         class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
                                         [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': file.status === 'Rejected',
@@ -101,8 +105,7 @@
                                     </span>
                                 </div>
                                 <div class="col-start-12">
-                                    <a (click)="ViewFileDetails(file)"
-                                        *ngIf="(file.status !== 'Loading')">
+                                    <a (click)="ViewFileDetails(file)" *ngIf="(file.status !== 'Loading')">
                                         <mat-icon svgIcon="heroicons_outline:pencil-alt"></mat-icon>
                                         View
                                     </a>
@@ -113,18 +116,23 @@
 
 
                         <mat-card class="loading-data my-2" id='cover-card' *ngIf="files == undefined">
-                            Loading data... 
-                       </mat-card>
-                       <mat-card class="loading-data my-2" id='cover-card' *ngIf="receivedFiles != undefined && receivedFiles.length == 0">
-                           No received files...
-                       </mat-card>
-                       <mat-paginator *ngIf="receivedFiles.length > 0" [length]="receivedFiles.length" [pageSize]="5"
-                           [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
-                       </mat-paginator>
+                            Loading data...
+                        </mat-card>
+                        <mat-card class="loading-data my-2" id='cover-card'
+                            *ngIf="receivedFiles != undefined && receivedFiles.length == 0">
+                            No received files...
+                        </mat-card>
+                        <mat-card class="loading-data my-2" id='cover-card'
+                            *ngIf="receivedPageSlice != undefined && receivedPageSlice.length == 0 && receivedFiles.length != 0 ">
+                            Search files not found...
+                        </mat-card>
+                        <mat-paginator *ngIf="receivedFiles.length > 0" [length]="receivedFiles.length" [pageSize]="5"
+                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
+                        </mat-paginator>
 
                     </mat-tab>
-                    <mat-tab label="Approved"  >
-                        <mat-card id='cover-card'class ='bg-indigo-200'>
+                    <mat-tab label="Approved">
+                        <mat-card id='cover-card' class='bg-indigo-200'>
                             <div class="grid grid-cols-12 gap-1">
                                 <div class="col-start-1 col-end-4"> File Reference </div>
                                 <div class="col-start-5 "> Priority</div>
@@ -135,8 +143,8 @@
                             </div>
                         </mat-card>
 
-                        <mat-card id='cover-card' *ngFor='let file of approvedPageSlice' class="my-2" >
-                            <div class="grid grid-cols-12 gap-1 " >
+                        <mat-card id='cover-card' *ngFor='let file of approvedPageSlice' class="my-2">
+                            <div class="grid grid-cols-12 gap-1 ">
                                 <div class="col-start-1 col-end-4">
 
                                     <div class="flex flex-row ...">
@@ -149,7 +157,7 @@
                                 <div class="col-start-5"> {{file.priority}}</div>
                                 <div class="col-start-6 col-end-7"> {{file.batchNumber}}</div>
                                 <div class="col-start-8 "> {{file.date | date }}</div>
-                                <div class="col-start-10"> 
+                                <div class="col-start-10">
                                     <span
                                         class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
                                         [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': file.status === 'Rejected',
@@ -160,8 +168,7 @@
                                     </span>
                                 </div>
                                 <div class="col-start-12">
-                                    <a (click)="ViewFileDetails(file)"
-                                        *ngIf="(file.status !== 'Loading')">
+                                    <a (click)="ViewFileDetails(file)" *ngIf="(file.status !== 'Loading')">
                                         <mat-icon svgIcon="heroicons_outline:pencil-alt"></mat-icon>
                                         View
                                     </a>
@@ -171,19 +178,23 @@
                         </mat-card>
 
 
-                        <mat-card  class="loading-data my-2" id='cover-card' *ngIf="approvedFiles == undefined">
-                            Loading data... 
-                       </mat-card>
-                       <mat-card class="loading-data my-2" id='cover-card' *ngIf="approvedFiles != undefined && approvedFiles.length == 0">
-                           No approved files...
-                       </mat-card>
-                       <mat-paginator *ngIf="approvedFiles.length > 0" [length]="approvedFiles.length" [pageSize]="5"
-                           [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
-                       </mat-paginator>
+                        <mat-card class="loading-data my-2" id='cover-card' *ngIf="approvedFiles == undefined">
+                            Loading data...
+                        </mat-card>
+                        <mat-card class="loading-data my-2" id='cover-card'
+                            *ngIf="approvedFiles != undefined && approvedFiles.length == 0">
+                            No approved files...
+                        </mat-card>
+                        <mat-card class="loading-data my-2" id='cover-card' *ngIf="approvedPageSlice != undefined && approvedPageSlice.length == 0 && approvedFiles.length != 0">
+                            Search files not found...
+                        </mat-card>
+                        <mat-paginator *ngIf="approvedFiles.length > 0" [length]="approvedFiles.length" [pageSize]="5"
+                            [pageSizeOptions]="[5,10,25,100]" (page)="OnPageChange($event)">
+                        </mat-paginator>
 
 
                     </mat-tab>
-                    
+
 
                 </mat-tab-group>
 
@@ -200,5 +211,3 @@
     </div>
 
 </div>
-
-

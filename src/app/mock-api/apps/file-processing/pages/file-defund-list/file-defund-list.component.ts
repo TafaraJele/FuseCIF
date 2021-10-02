@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Update } from '@ngrx/entity';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { approveFundOrDefund, loadFileDefundRequests, approveFile } from '../../store/actions/files.actions';
-import { selectFiles } from '../../store/selectors/files.selector';
 import { FileService } from '../../services/files.service';
 import { FileMetadata } from 'app/shared/models/filemetadata.model';
 import { AppState } from 'app/mock-api/store';
 import { PageEvent } from '@angular/material/paginator';
-import { FormControl } from '@angular/forms';
 import { FilePageManagerComponent } from '../file-page-manager/file-page-manager.component';
 import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-file-defund-list',
@@ -17,96 +16,71 @@ import { Router } from '@angular/router';
   styleUrls: ['./file-defund-list.component.scss']
 })
 export class FileDefundListComponent implements OnInit {
-  files: FileMetadata[] = []
-  isSidebarOpen: boolean
-  filteredFiles: FileMetadata[]  = []
-  listOfSearchName: string[] = []
-  listOfSearchAddress: string[] = []
+  files: FileMetadata[] = []  
+  filteredFiles: FileMetadata[]  = [] 
   showMsg: boolean = false
   activeKey = 0
   approvedFiles: FileMetadata[]  = []
   receivedFiles: FileMetadata[]  = []
   approvedPageSlice : any[]  = []
   receivedPageSlice: any[]  = []
-  searchInputControl: FormControl = new FormControl();
 
-  mapOfSort: { [key: string]: any } = {
-    file: null,
-    batchNumber: null,
-    status: null,
-    fileReference: null,
-    timeSaved: null
-  }
-  sortName: string | null = null
-  sortValue: string | null = null
-  constructor(private store: Store<AppState>,
-    private service: FileService, private router: Router) {
+  //get date and month search parameter from template
+  private _searchMonthDate: string
+  get searchMonthDate(): string { return this._searchMonthDate }
+  set searchMonthDate(value: string) {
+    this._searchMonthDate = value;
+    this.filterFiles("", value);
   }
 
-  ngOnInit(): void {
-    
-    //this.store.dispatch(new UserActions.LoadFiles())
+  //get file reference search parameter from template
+  private _seachParameter: string
+  get seachParameter(): string { return this._seachParameter }
+  set seachParameter(value: string) {
+    this._seachParameter = value;
+    this.filterFiles(value, "");
+  }
+  
+  constructor(
+    private service: FileService, private router: Router, public datePipe: DatePipe) {
+  }
+
+  ngOnInit(): void {    
+    this.LoadFiles()    
+  }
+  //load files service and filter files by request type
+  LoadFiles(){
     this.service.loadFiles().subscribe(files => {
-      if (files) {
-        
-        this.files = files.filter(c => c.requestType == 'carddefunding')
+      if (files) {        
+        this.FilterByFileStatus(files)        
+        this.SortFilesByDateDescending(this.approvedPageSlice)
+        this.SortFilesByDateDescending(this.receivedPageSlice)       
+
+      }
+    })  
+  } 
+  //sort files by descending order to show the most recent files first
+  SortFilesByDateDescending(array: any){
+   
+    array.sort(function compare(a, b) {
+      var dateA = new Date(a.date);
+      var dateB = new Date(b.date);
+      return  dateB.getTime() - dateA.getTime() ;
+    });
+  }
+
+   //filter by file status approved or received
+   FilterByFileStatus(files: any){
+    this.files = files.filter(c => c.requestType == 'carddefunding')
         this.approvedFiles = this.files.filter(c => c.status == 'Approved')
         this.receivedFiles = this.files.filter(c => c.status == 'Received') 
         this.filteredFiles = this.receivedFiles
-        this.approvedPageSlice = this.approvedFiles.slice(0, 5) 
-        this.receivedPageSlice = this.receivedFiles.slice(0, 5) 
 
-      }
-    })    
- 
-    this.store.pipe(select(selectFiles())).subscribe(files => {
-     
-      if (files) {
-        
-        this.files = files.filter(c => c.requestType == 'carddefunding')
-        this.approvedFiles = this.files.filter(c => c.status == 'Approved')
-        this.receivedFiles = this.files.filter(c => c.status == 'Received') 
-        this.filteredFiles = this.receivedFiles
-      }
-    })
-    
+        //set page slice to filtered files. page slices is used in the pages on ngFor            
+        this.approvedPageSlice = this.approvedFiles.slice(0, 5)
+        this.receivedPageSlice = this.receivedFiles.slice(0, 5)
   }
-  sort(sortName: string, value: string): void {
-    this.sortName = sortName
-    this.sortValue = value
-    for (const key in this.mapOfSort) {
-      if (this.mapOfSort.hasOwnProperty(key)) {
-        this.mapOfSort[key] = key === sortName ? value : null
-      }
-    }
-    this.search(this.listOfSearchName, this.listOfSearchAddress)
-  }
-
-  search(listOfSearchName: string[], listOfSearchAddress: string[]): void {
-    this.listOfSearchName = listOfSearchName
-    this.listOfSearchAddress = listOfSearchAddress
-    const filterFunc = item =>
-      (this.listOfSearchAddress.length
-        ? this.listOfSearchAddress.some(address => item.address.indexOf(address) !== -1)
-        : true) &&
-      (this.listOfSearchName.length
-        ? this.listOfSearchName.some(name => item.name.indexOf(name) !== -1)
-        : true)
-    const listOfData = this.files.filter(item => filterFunc(item))
-    if (this.sortName !== null && this.sortValue !== null) {
-      this.filteredFiles = listOfData.sort((a, b) =>
-        this.sortValue === 'ascend'
-          ? a[this.sortName] > b[this.sortName]
-            ? 1
-            : -1
-          : b[this.sortName] > a[this.sortName]
-            ? 1
-            : -1,
-      )
-    } else {
-      this.filteredFiles = this.files
-    }
-  }
+  //navigate to file-manager when view file details is called
   ViewFileDetails(file):any{
    
     this.service.changeMessage(file)
@@ -115,12 +89,7 @@ export class FileDefundListComponent implements OnInit {
     this.router.navigate(['/file-manager/files',file.id]);
 
   }
-  viewApproved(){
-    this.filteredFiles = this.approvedFiles
-  }
-  viewReceived(){
-    this.filteredFiles = this.receivedFiles
-  }
+  
   OnPageChange(event: PageEvent) {
     
     const startIndex = event.pageIndex * event.pageSize;
@@ -133,55 +102,35 @@ export class FileDefundListComponent implements OnInit {
     this.receivedPageSlice = this.receivedFiles.slice(startIndex, endIndex)
 
   }
- 
-  onApprove(file): any {
-    if (file.requestType==='carddefunding') 
-    {
-
-      const metadata = { ...file }
-      metadata.status = 'Approved'
-      this.showMsg = true
-      
-      if (file.batchNumber) {
-        const update: Update<FileMetadata> = {
-          id: file.id,
-          changes: metadata
-        }
-        this.store.dispatch(approveFundOrDefund({ file }))
-        this.store.dispatch(loadFileDefundRequests({fileBatchNumber: file.batchNumber}))  
-      }          
-
-    }     
-    
-    else if ( file.requestType === 'cardfunding')
-    {
-      const metadata = { ...file }
-      metadata.status = 'Approved'
-      this.showMsg = true
-
-      this.store.dispatch(approveFundOrDefund({ file: metadata }))      
-
+  //filter files by search parameters
+  filterFiles(value: string, monthDate: string) {
+    if (value != "") {
+      //filter by file reference
+      this.filteredFiles = this.files.filter(c => c.fileReference.toLowerCase().indexOf(value.toLowerCase()) !== -1)
+      this.receivedPageSlice = this.filteredFiles.slice(0, 5)
+      this.approvedPageSlice = this.filteredFiles.slice(0, 5)
     }
-    
+    else if (monthDate != "") {
+      //convert each files's date to string and to short date format for filtering
+      this.files.forEach((file) => {
+
+        const metadata = { ...file }
+        let date = this.datePipe.transform(metadata.date)
+        file.searchDate = date
+      })
+      //filter by date
+      this.filteredFiles = this.files.filter(c => c.searchDate.toLowerCase().indexOf(monthDate.toLowerCase()) !== -1)
+      this.receivedPageSlice = this.filteredFiles.slice(0, 5)
+      this.approvedPageSlice = this.filteredFiles.slice(0, 5)
+    }
     else {
-      const metadata = { ...file }
-      metadata.status = 'Approved'
-      this.showMsg = true
-
-      if (file.batchNumber) {
-        const update: Update<FileMetadata> = {
-          id: file.id,
-          changes: metadata
-        }
-        this.store.dispatch(approveFile({ file: update }))
-    
-      }
-
+      //else set files to default files
+      this.receivedPageSlice = this.receivedFiles.slice(0, 5)
+      this.approvedPageSlice = this.approvedFiles.slice(0, 5)
     }
-    setTimeout(() => {
-      this.showMsg = false
-    }, 2000)
-  }
+
+  } 
+    //download csv file of the selected filter
   exportToCsv(filter): any {
     let name = 'defundrequestsfiles.csv'
     let filteredFiles = this.files

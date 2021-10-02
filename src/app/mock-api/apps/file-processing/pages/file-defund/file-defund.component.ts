@@ -19,31 +19,17 @@ import { FilePageManagerComponent } from '../file-page-manager/file-page-manager
 export class FileDefundComponent implements OnInit {
   @Input() file: any
   fileId: any
-  defundrequests: FundRequest[] = []
-  isSidebarOpen: boolean
+  defundrequests: FundRequest[] = []  
   filteredDefundRequests: FundRequest[] = []
   successfulDefundRequests: FundRequest[] = []
-  errorsDefundRequests: FundRequest[] = []
-  listOfSearchName: string[] = []
-  listOfSearchAddress: string[] = []
+  errorsDefundRequests: FundRequest[] = [] 
   showResubmit = false
   activeKey = 0
   showMsg = false
-  message: string
-  searchInputControl: FormControl = new FormControl()
+  message: string  
   successPageSlice: any[] = []
   errorPageSlice: any[] = []
-  showApprove: boolean
-
-  mapOfSort: { [key: string]: any } = {
-    file: null,
-    batchNumber: null,
-    status: null,
-    fileReference: null,
-    timeSaved: null
-  }
-  sortName: string | null = null
-  sortValue: string | null = null
+  showApprove: boolean    
   batchNumber: any
 
   constructor(private store: Store<AppState>,
@@ -87,42 +73,8 @@ export class FileDefundComponent implements OnInit {
       this.showApprove = true
     }
 
-  }
-  sort(sortName: string, value: string): void {
-    this.sortName = sortName
-    this.sortValue = value
-    for (const key in this.mapOfSort) {
-      if (this.mapOfSort.hasOwnProperty(key)) {
-        this.mapOfSort[key] = key === sortName ? value : null
-      }
-    }
-    this.search(this.listOfSearchName, this.listOfSearchAddress)
-  }
-  search(listOfSearchName: string[], listOfSearchAddress: string[]): void {
-    this.listOfSearchName = listOfSearchName
-    this.listOfSearchAddress = listOfSearchAddress
-    const filterFunc = item =>
-      (this.listOfSearchAddress.length
-        ? this.listOfSearchAddress.some(address => item.address.indexOf(address) !== -1)
-        : true) &&
-      (this.listOfSearchName.length
-        ? this.listOfSearchName.some(name => item.name.indexOf(name) !== -1)
-        : true)
-    const listOfData = this.defundrequests.filter(item => filterFunc(item))
-    if (this.sortName !== null && this.sortValue !== null) {
-      this.filteredDefundRequests = listOfData.sort((a, b) =>
-        this.sortValue === 'ascend'
-          ? a[this.sortName] > b[this.sortName]
-            ? 1
-            : -1
-          : b[this.sortName] > a[this.sortName]
-            ? 1
-            : -1,
-      )
-    } else {
-      this.filteredDefundRequests = this.defundrequests
-    }
-  }
+  } 
+ 
   loadFile(): any {
 
     if (this.fileId) {

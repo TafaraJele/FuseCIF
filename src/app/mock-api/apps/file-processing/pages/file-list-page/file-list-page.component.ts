@@ -1,19 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Update } from '@ngrx/entity';
-import { select, Store } from '@ngrx/store';
-import { AppState } from 'app/mock-api/store';
+import { Component, OnInit } from '@angular/core';
 import { FileMetadata } from 'app/shared/models/filemetadata.model';
 import { FileService } from '../../services/files.service';
-import { approveFile, approveFundOrDefund, loadFileDefundRequests } from '../../store/actions/files.actions';
-import { selectFiles } from '../../store/selectors/files.selector';
-import * as UserActions from 'app/mock-api/store/user/actions';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { FormControl } from '@angular/forms';
 import { FilePageManagerComponent } from '../file-page-manager/file-page-manager.component';
-import { FileProcessingModule } from '../file-processing/file-processing.module';
 import { Router } from '@angular/router';
-import { NotificationsService } from 'app/shared/notifications/notifications.service';
+import { PageEvent } from '@angular/material/paginator';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-file-list-page',
@@ -21,98 +12,73 @@ import { NotificationsService } from 'app/shared/notifications/notifications.ser
   styleUrls: ['./file-list-page.component.scss']
 })
 export class FileListPageComponent implements OnInit {
-  files: FileMetadata[]  =[]
-  isSidebarOpen: boolean
-  filteredFiles: FileMetadata[]  =[]
-  listOfSearchName: string[] = []
-  listOfSearchAddress: string[] = []
+  files: FileMetadata[] = []
+  filteredFiles: FileMetadata[] = []
   showMsg: boolean = false
   activeKey = 0
-  approvedFiles: FileMetadata[] =[]
-  receivedFiles: FileMetadata[] =[]
-  approvedPageSlice: any[] =[]
-  receivedPageSlice: any[] =[]
-  searchInputControl: FormControl = new FormControl();
+  approvedFiles: FileMetadata[] = []
+  receivedFiles: FileMetadata[] = []
+  approvedPageSlice: any[] = []
+  receivedPageSlice: any[] = []
 
-  mapOfSort: { [key: string]: any } = {
-    file: null,
-    batchNumber: null,
-    status: null,
-    fileReference: null,
-    timeSaved: null
+   //get date and month search parameter from template
+  private _searchMonthDate: string
+  get searchMonthDate(): string { return this._searchMonthDate }
+  set searchMonthDate(value: string) {
+    this._searchMonthDate = value;
+    this.filterFiles("",value);
   }
-  sortName: string | null = null
-  sortValue: string | null = null
-  constructor(private store: Store<AppState>,
-    private service: FileService, private router: Router, private fileManager: FilePageManagerComponent) {
+
+   //get file reference search parameter from template
+  private _seachParameter: string
+  get seachParameter(): string { return this._seachParameter }
+  set seachParameter(value: string) {
+    this._seachParameter = value;
+    this.filterFiles(value, "");
+  }  
+
+  constructor(
+    private service: FileService, private router: Router, public datePipe: DatePipe) {
   }
   ngOnInit(): void {
+    this.LoadFiles()
     
-    // this.store.dispatch(new UserActions.LoadFiles())
+  }
+//load files service and filter files by request type
+  LoadFiles() {
     this.service.loadFiles().subscribe(files => {
-      
+
       if (files) {
-
-        this.files = files.filter(c => c.requestType == 'cardrequest')
-        this.approvedFiles = this.files.filter(c => c.status == 'Approved')
-        this.receivedFiles = this.files.filter(c => c.status == 'Received') 
-        this.filteredFiles = this.receivedFiles            
-        this.approvedPageSlice = this.approvedFiles.slice(0, 5) 
-        this.receivedPageSlice = this.receivedFiles.slice(0, 5) 
-
+        this.FilterByFileStatus(files)        
+        this.SortFilesByDateDescending(this.approvedPageSlice)
+        this.SortFilesByDateDescending(this.receivedPageSlice)
       }
     })
-    this.store.pipe(select(selectFiles())).subscribe(files => {
-  
-      if (files) {
-        
-        this.files = files.filter(c => c.requestType == 'cardrequest')
-        this.approvedFiles = this.files.filter(c => c.status == 'Approved')
-        this.receivedFiles = this.files.filter(c => c.status == 'Received') 
-        this.filteredFiles = this.receivedFiles       
-      }
-    })
-
    
   }
-  sort(sortName: string, value: string): void {
-    this.sortName = sortName
-    this.sortValue = value
-    for (const key in this.mapOfSort) {
-      if (this.mapOfSort.hasOwnProperty(key)) {
-        this.mapOfSort[key] = key === sortName ? value : null
-      }
-    }
-    this.search(this.listOfSearchName, this.listOfSearchAddress)
+
+  //sort files by descending order to show the most recent files first
+  SortFilesByDateDescending(array: any){
+   
+    array.sort(function compare(a, b) {
+      var dateA = new Date(a.date);
+      var dateB = new Date(b.date);
+      return  dateB.getTime() - dateA.getTime() ;
+    });
   }
 
-  search(listOfSearchName: string[], listOfSearchAddress: string[]): void {
-    this.listOfSearchName = listOfSearchName
-    this.listOfSearchAddress = listOfSearchAddress
-    const filterFunc = item =>
-      (this.listOfSearchAddress.length
-        ? this.listOfSearchAddress.some(address => item.address.indexOf(address) !== -1)
-        : true) &&
-      (this.listOfSearchName.length
-        ? this.listOfSearchName.some(name => item.name.indexOf(name) !== -1)
-        : true)
-    const listOfData = this.files.filter(item => filterFunc(item))
-    if (this.sortName !== null && this.sortValue !== null) {
-      this.filteredFiles = listOfData.sort((a, b) =>
-        this.sortValue === 'ascend'
-          ? a[this.sortName] > b[this.sortName]
-            ? 1
-            : -1
-          : b[this.sortName] > a[this.sortName]
-            ? 1
-            : -1,
-      )
-    } else {
-      this.filteredFiles = this.files
-    }
+  //filter by file status approved or received
+  FilterByFileStatus(files: any){
+    this.files = files.filter(c => c.requestType == 'cardrequest')
+    this.approvedFiles = this.files.filter(c => c.status == 'Approved')
+    this.receivedFiles = this.files.filter(c => c.status == 'Received')
+    this.filteredFiles = this.receivedFiles
+    this.approvedPageSlice = this.approvedFiles.slice(0, 5)
+    this.receivedPageSlice = this.receivedFiles.slice(0, 5)
   }
+  //when the pagination is changes on page changes the page slice data
   OnPageChange(event: PageEvent) {
-    
+
     const startIndex = event.pageIndex * event.pageSize;
 
     let endIndex = startIndex + event.pageSize;
@@ -123,43 +89,49 @@ export class FileListPageComponent implements OnInit {
     this.receivedPageSlice = this.receivedFiles.slice(startIndex, endIndex)
 
   }
-  ViewFileDetails(file):any{
- 
+
+    //filter files by search parameters
+    filterFiles(value: string, monthDate: string) {
+      if (value != "") {
+        //filter by file reference
+        this.filteredFiles = this.files.filter(c => c.fileReference.toLowerCase().indexOf(value.toLowerCase()) !== -1)
+        this.receivedPageSlice = this.filteredFiles.slice(0, 5)
+        this.approvedPageSlice = this.filteredFiles.slice(0, 5)
+      }
+      else if (monthDate != "") {
+        //convert each files's date to string and to short date format for filtering
+        this.files.forEach((file) => {
+  
+          const metadata = { ...file }
+          let date = this.datePipe.transform(metadata.date)
+          file.searchDate = date
+        })
+        //filter by date
+        this.filteredFiles = this.files.filter(c => c.searchDate.toLowerCase().indexOf(monthDate.toLowerCase()) !== -1)
+        this.receivedPageSlice = this.filteredFiles.slice(0, 5)
+        this.approvedPageSlice = this.filteredFiles.slice(0, 5)
+      }
+      else {
+        //else set files to default files
+        this.receivedPageSlice = this.receivedFiles.slice(0, 5)
+        this.approvedPageSlice = this.approvedFiles.slice(0, 5)
+      }
+  
+    }
+
+  //navigate to file-manager when view file details is called
+  ViewFileDetails(file): any {
+
     this.service.changeMessage(file)
     var fileManagers = new FilePageManagerComponent(this.service)
     fileManagers.ngOnInit()
-    this.router.navigate(['/file-manager/files',file.id]);
+    this.router.navigate(['/file-manager/files', file.id]);
 
-  }
-  viewApproved(){
-    this.filteredFiles = this.approvedFiles
-  }
-  viewReceived(){
-    this.filteredFiles = this.receivedFiles
-  }
- 
-  onApprove(file): any {
-    
-    this.files.forEach((file) => {
-      
-        const metadata = { ...file }
-        metadata.status = 'Loading'  
-    
-    })
-    
+  } 
 
-      const metadata = { ...file }
-      metadata.status = 'Approved'
-      this.showMsg = true
-
-      this.store.dispatch(approveFundOrDefund({ file: metadata }))
-      
-    setTimeout(() => {
-      this.showMsg = false
-    }, 2000)
-  }
+ //download csv file of the selected filter
   exportToCsv(filter): any {
-    let name = 'fundrequestsfiles.csv'
+    let name = 'cardrequestsfiles.csv'
     let filteredFiles = this.files
     if (filter) {
       name = filter + name + '.csv'
@@ -167,7 +139,6 @@ export class FileListPageComponent implements OnInit {
     }
     this.service.exportToCsv(name, filteredFiles)
   }
-  
 
 
 }

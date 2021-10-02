@@ -1,24 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core'
-import { FormControl } from '@angular/forms'
-
 import { PageEvent } from '@angular/material/paginator'
-import { ActivatedRoute, Router } from '@angular/router'
 import { Update } from '@ngrx/entity'
-import { select, Store } from '@ngrx/store'
-import { AppState } from 'app/mock-api/store'
 import { Account } from 'app/shared/models/account.model'
 import { Card } from 'app/shared/models/card.model'
 import { Customer } from 'app/shared/models/customer.model'
 import { FileMetadata } from 'app/shared/models/filemetadata.model'
 import { NotificationsService } from 'app/shared/notifications/notifications.service'
-
 import { FileService } from '../../services/files.service'
-import { loadBatchCustomers } from '../../store/actions/customers.actions'
-import { CardsLoaded, loadFileAccounts, loadFileCards, reApproveChargeFee, reApproveFile, updateCards } from '../../store/actions/files.actions'
-import { selectFileAccounts } from '../../store/selectors/accounts.selector'
-import { selectCards, selectFileCards } from '../../store/selectors/cards.selector'
-import { selectBatchCustomers } from '../../store/selectors/customers.selector'
-import { selectFile } from '../../store/selectors/files.selector'
+
 
 @Component({
   selector: 'app-file-page',
@@ -32,6 +21,7 @@ export class FilePageComponent implements OnInit {
   accounts: Account[] =[]
   customers: Customer[] =[]
   cards: Card[] =[]
+  filteredCustomers: Customer[] = []
   successfulCustomers: Customer[] =[]
   errorsCustomers: Customer[] =[]
   rejectedCustomers: Customer[]
@@ -42,55 +32,30 @@ export class FilePageComponent implements OnInit {
   filteredCards: Card[] =[]
   showMsg = false
   showResubmit = false
-  showResubmitCard = false
-  isSidebarOpen: boolean
-  filteredCustomers: Customer[] =[]
-  listOfSearchName: string[] = []
-  listOfSearchAddress: string[] = [] 
+  showResubmitCard = false  
   successPageSlice: any[] =[]
   errorPageSlice: any[] = []
   rejectedPageSlice: any[] =[]
-  cardsPageSlice: any[] =[]
-  searchInputControl: FormControl = new FormControl();
+  cardsPageSlice: any[] =[] 
   amlockRejectedPageSlice: any[] =[]
   activeKey = 0
   showApprove: boolean
-  mapOfSort: { [key: string]: any } = {
-    file: null,
-    batchNumber: null,
-    status: null,
-    fileReference: null,
-    timeSaved: null
-  }
-  sortName: string | null = null
-  sortValue: string | null = null
+ 
   constructor(
     private service: FileService,
     private notifyService : NotificationsService) {
-
     
   }
 
-
   ngOnInit(): void {
-    
-    if(this.file.status == 'Received' || 'AmlockError')
+   
+    if((this.file.status === 'Received') || (this.file.status == 'AmlockError'))
     {
       this.showApprove = true
     }
     this.GetCustomers()    
     this.loadCards()
-  }
-  sort(sortName: string, value: string): void {
-    this.sortName = sortName
-    this.sortValue = value
-    for (const key in this.mapOfSort) {
-      if (this.mapOfSort.hasOwnProperty(key)) {
-        this.mapOfSort[key] = key === sortName ? value : null
-      }
-    }
-    this.search(this.listOfSearchName, this.listOfSearchAddress)
-  }
+  }  
   changeKey(key) {
     this.activeKey = key
   }
@@ -131,33 +96,7 @@ export class FilePageComponent implements OnInit {
       })
     }
   }
-
-  search(listOfSearchName: string[], listOfSearchAddress: string[]): void {
-    this.listOfSearchName = listOfSearchName
-    this.listOfSearchAddress = listOfSearchAddress
-    const filterFunc = item =>
-      (this.listOfSearchAddress.length
-        ? this.listOfSearchAddress.some(address => item.address.indexOf(address) !== -1)
-        : true) &&
-      (this.listOfSearchName.length
-        ? this.listOfSearchName.some(name => item.name.indexOf(name) !== -1)
-        : true)
-    const listOfData = this.customers.filter(item => filterFunc(item))
-    if (this.sortName !== null && this.sortValue !== null) {
-      this.filteredCustomers = listOfData.sort((a, b) =>
-        this.sortValue === 'ascend'
-          ? a[this.sortName] > b[this.sortName]
-            ? 1
-            : -1
-          : b[this.sortName] > a[this.sortName]
-            ? 1
-            : -1,
-      )
-    } else {
-      this.filteredCustomers = this.customers
-    }
-  }
-  
+ 
   viewErrors(): any {
     
     this.activeKey = 1

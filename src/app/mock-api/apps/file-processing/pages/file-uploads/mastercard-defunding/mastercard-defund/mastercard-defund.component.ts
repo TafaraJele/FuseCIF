@@ -1,9 +1,11 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { FuseConfirmationDialogComponent } from '@fuse/services/confirmation/dialog/dialog.component';
 import { Store } from '@ngrx/store';
 import { FileService } from 'app/mock-api/apps/file-processing/services/files.service';
 import { approveFundOrDefund } from 'app/mock-api/apps/file-processing/store/actions/files.actions';
@@ -21,10 +23,7 @@ import { FilePageManagerComponent } from '../../../file-page-manager/file-page-m
 export class MastercardDefundComponent implements OnInit {
 
   files: FileMetadata[] = []
-  isSidebarOpen: boolean
   filteredFiles: FileMetadata[] = []
-  listOfSearchName: string[] = []
-  listOfSearchAddress: string[] = []
   showMsg: boolean = false
   activeKey = 0
   approvedFiles: FileMetadata[] = []
@@ -35,75 +34,100 @@ export class MastercardDefundComponent implements OnInit {
   uploadResponse: UploadResponse
   uploadErrorResponse: UploadErrorResponse[] = []
   fileName = ''
+  dialogRef: MatDialogRef<FuseConfirmationDialogComponent, any>
+  color?: 'primary' | 'accent' | 'warn' | 'success';
+
   @ViewChild('fileUpload') fileUpload;
 
-  mapOfSort: { [key: string]: any } = {
-    file: null,
-    batchNumber: null,
-    status: null,
-    fileReference: null,
-    timeSaved: null
+
+  //get date and month search parameter from template
+  private _searchMonthDate: string
+  get searchMonthDate(): string { return this._searchMonthDate }
+  set searchMonthDate(value: string) {
+    this._searchMonthDate = value;
+    this.filterFiles("", value);
   }
-  sortName: string | null = null
-  sortValue: string | null = null
-  constructor(private store: Store<AppState>, private _fuseConfirmationService: FuseConfirmationService,
-    private service: FileService, private router: Router, private fileManager: FilePageManagerComponent, public dialog: MatDialog) {
+
+  //get file reference search parameter from template
+  private _seachParameter: string
+  get seachParameter(): string { return this._seachParameter }
+  set seachParameter(value: string) {
+    this._seachParameter = value;
+    this.filterFiles(value, "");
+  }
+
+  constructor(private _fuseConfirmationService: FuseConfirmationService,
+    private service: FileService, private router: Router, public datePipe: DatePipe) {
   }
 
   ngOnInit(): void {
 
+    this.LoadFiles()
+  }
+
+  LoadFiles() {
     this.service.loadFidelityFiles().subscribe(files => {
 
       if (files) {
 
-        this.files = files.filter(c => c.requestType == 'carddefunding')
-        this.approvedFiles = this.files.filter(c => c.status == 'Approved')
-        this.receivedFiles = this.files.filter(c => c.status == 'Received')
-        this.filteredFiles = this.receivedFiles
-        this.approvedPageSlice = this.approvedFiles.slice(0, 5)
-        this.receivedPageSlice = this.receivedFiles.slice(0, 5)
+        this.FilterByFileStatus(files)
+        this.SortFilesByDateDescending(this.approvedPageSlice)
+        this.SortFilesByDateDescending(this.receivedPageSlice)
 
       }
     })
-
-
   }
-  sort(sortName: string, value: string): void {
-    this.sortName = sortName
-    this.sortValue = value
-    for (const key in this.mapOfSort) {
-      if (this.mapOfSort.hasOwnProperty(key)) {
-        this.mapOfSort[key] = key === sortName ? value : null
+
+  //sort files by descending order to show the most recent files first
+  SortFilesByDateDescending(array: any) {
+
+    array.sort(function compare(a, b) {
+      var dateA = new Date(a.date);
+      var dateB = new Date(b.date);
+      return dateB.getTime() - dateA.getTime();
+    });
+  }
+  //filter by file status approved or received
+  FilterByFileStatus(files: any) {
+    this.files = files.filter(c => c.requestType == 'carddefunding')
+    this.approvedFiles = this.files.filter(c => c.status == 'Approved')
+    this.receivedFiles = this.files.filter(c => c.status == 'Received')
+    this.filteredFiles = this.receivedFiles
+
+    //set page slice to filtered files. page slices is used in the pages on ngFor            
+    this.approvedPageSlice = this.approvedFiles.slice(0, 5)
+    this.receivedPageSlice = this.receivedFiles.slice(0, 5)
+  }
+
+    //filter files by search parameters
+    filterFiles(value: string, monthDate: string) {
+      if (value != "") {
+        //filter by file reference
+        this.filteredFiles = this.files.filter(c => c.fileReference.toLowerCase().indexOf(value.toLowerCase()) !== -1)
+        this.receivedPageSlice = this.filteredFiles.slice(0, 5)
+        this.approvedPageSlice = this.filteredFiles.slice(0, 5)
       }
+      else if (monthDate != "") {
+        //convert each files's date to string and to short date format for filtering
+        this.files.forEach((file) => {
+  
+          const metadata = { ...file }
+          let date = this.datePipe.transform(metadata.date)
+          file.searchDate = date
+        })
+        //filter by date
+        this.filteredFiles = this.files.filter(c => c.searchDate.toLowerCase().indexOf(monthDate.toLowerCase()) !== -1)
+        this.receivedPageSlice = this.filteredFiles.slice(0, 5)
+        this.approvedPageSlice = this.filteredFiles.slice(0, 5)
+      }
+      else {
+        //else set files to default files
+        this.receivedPageSlice = this.receivedFiles.slice(0, 5)
+        this.approvedPageSlice = this.approvedFiles.slice(0, 5)
+      }
+  
     }
-    this.search(this.listOfSearchName, this.listOfSearchAddress)
-  }
 
-  search(listOfSearchName: string[], listOfSearchAddress: string[]): void {
-    this.listOfSearchName = listOfSearchName
-    this.listOfSearchAddress = listOfSearchAddress
-    const filterFunc = item =>
-      (this.listOfSearchAddress.length
-        ? this.listOfSearchAddress.some(address => item.address.indexOf(address) !== -1)
-        : true) &&
-      (this.listOfSearchName.length
-        ? this.listOfSearchName.some(name => item.name.indexOf(name) !== -1)
-        : true)
-    const listOfData = this.files.filter(item => filterFunc(item))
-    if (this.sortName !== null && this.sortValue !== null) {
-      this.filteredFiles = listOfData.sort((a, b) =>
-        this.sortValue === 'ascend'
-          ? a[this.sortName] > b[this.sortName]
-            ? 1
-            : -1
-          : b[this.sortName] > a[this.sortName]
-            ? 1
-            : -1,
-      )
-    } else {
-      this.filteredFiles = this.files
-    }
-  }
   OnPageChange(event: PageEvent) {
 
     const startIndex = event.pageIndex * event.pageSize;
@@ -125,148 +149,52 @@ export class MastercardDefundComponent implements OnInit {
 
   }
 
-  UploadFundRequestFile(event) {
-
-    var file = event.target.files[0];
-    if (file) {
-      this.fileName = file.name
-      const formData: FormData = new FormData();
+ //upload files
+ UploadFundRequestFile(event) {
+    
+  this.ShowMessage("File is being uploaded. Please wait!!!", "Notification", "", "primary")
+  debugger
+  this.LoadFiles()
+  var file = event.target.files[0];
+  if (file) {
+    this.fileName = file.name
+    const formData: FormData = new FormData();
     formData.append('FileContent', file, file.name)
 
     this.service.UploadFile(formData).subscribe(response => {
 
       if (response) {
         this.uploadResponse = response
-
         this.service.changeResponse(this.uploadResponse)
-        //   let dialogRef = this.dialog.open(UploadResponsesComponent, {
-        //     height: '400px',
-        //     width: '600px',
-        //   });
-        // Open the dialog and save the reference of it
-        const dialogRef = this._fuseConfirmationService.open(
-
-          {
-            "title": response.message + "!!!",
-            "subtitle": "File batch number:" + response.batchNumber,
-            "message": "File reference number:" + response.fileReferenceNumber,
-            "icon": {
-              "show": true,
-              "name": "heroicons_outline:check",
-              "color": "success"
-            },
-            "actions": {
-              "confirm": {
-                "show": true,
-                "label": "OK",
-                "color": "success"
-              },
-              "cancel": {
-                "show": false,
-                "label": 'Cancel'
-              }
-
-            },
-
-            "dismissible": true
-          }
-
-        );
-
-        // Subscribe to afterClosed from the dialog reference
-        this.service.loadFidelityFiles().subscribe(files => {
-
-          if (files) {
-
-            this.files = files.filter(c => c.requestType == 'carddefunding')
-            this.approvedFiles = this.files.filter(c => c.status == 'Approved')
-            this.receivedFiles = this.files.filter(c => c.status == 'Received')
-            this.filteredFiles = this.receivedFiles
-            this.approvedPageSlice = this.approvedFiles.slice(0, 5)
-            this.receivedPageSlice = this.receivedFiles.slice(0, 5)
-
-          }
-        })
-
+        this.dialogRef.close()          
+        this.ShowMessage("File reference number:" + response.fileReferenceNumber, response.message + "!!!", "File batch number:" + response.batchNumber, "success")
+        this.LoadFiles()
       }
     },
       httpErrorResponse => {
-      
+
         var message = ""
-        if(httpErrorResponse.status == 500)
-        {
-           message = httpErrorResponse.error
+        if (httpErrorResponse.status == 500) {
+          message = httpErrorResponse.error
         }
-        else{
+        else if (httpErrorResponse.status == 0) {
+          message = httpErrorResponse.message
+        }
+        else {
           this.uploadErrorResponse = httpErrorResponse.error
           message = this.uploadErrorResponse[0].message
         }
-       
-        const dialogRef = this._fuseConfirmationService.open(
-
-          {
-            "title": "Error !!!",
-            "subtitle": "",
-            "message": message,
-            "icon": {
-              "show": true,
-              "name": "heroicons_outline:exclamation",
-              "color": "warn"
-            },
-            "actions": {
-              "confirm": {
-                "show": true,
-                "label": "OK",
-                "color": "warn"
-              },
-              "cancel": {
-                "show": false,
-                "label": 'Cancel'
-              }
-
-            },
-
-            "dismissible": true
-          }
-
-        );
-      }      
+        this.dialogRef.close()         
+        this.ShowMessage(message, "Error!!!", "", "warn")
+      }
 
     )
     this.fileUpload.nativeElement.value = ""
 
-    }
-
-    
-
   }
-  viewApproved() {
-    this.filteredFiles = this.approvedFiles
-  }
-  viewReceived() {
-    this.filteredFiles = this.receivedFiles
-  }
-
-  onApprove(file): any {
-
-    this.files.forEach((file) => {
-
-      const metadata = { ...file }
-      metadata.status = 'Loading'
-
-    })
+}
 
 
-    const metadata = { ...file }
-    metadata.status = 'Approved'
-    this.showMsg = true
-
-    this.store.dispatch(approveFundOrDefund({ file: metadata }))
-
-    setTimeout(() => {
-      this.showMsg = false
-    }, 2000)
-  }
   exportToCsv(filter): any {
     let name = 'fundrequestsfiles.csv'
     let filteredFiles = this.files
@@ -275,5 +203,39 @@ export class MastercardDefundComponent implements OnInit {
       filteredFiles = this.files.filter(a => a.status.toLowerCase() === filter.toLowerCase())
     }
     this.service.exportToCsv(name, filteredFiles)
+  }
+ 
+  //dispaly error or success messages
+  ShowMessage(message: string, title: string, subtitle: string, color?: 'primary' | 'accent' | 'warn' | 'success' ) {
+
+    this.dialogRef = this._fuseConfirmationService.open(
+
+      {
+        "title": title,
+        "subtitle": subtitle,
+        "message": message,
+        "icon": {
+          "show": true,
+          "name": "heroicons_outline:exclamation",
+          "color": color
+        },
+        "actions": {
+          "confirm": {
+            "show": true,
+            "label": "OK",
+            "color": color
+          },
+          "cancel": {
+            "show": false,
+            "label": 'Cancel'
+          }
+
+        },
+
+        "dismissible": true
+      }
+
+    );
+
   }
 }
