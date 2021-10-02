@@ -28,6 +28,12 @@ export class SettingsComponent implements OnInit {
         description: 'Manage general application settings'
       },
       {
+        id: 'payment-file',
+        icon: 'heroicons_outline:document-text',
+        title: 'NI Payment Files',
+        description: 'Manage NI payment files'
+      },
+      {
         id: 'amlock',
         icon: 'heroicons_outline:globe-alt',
         title: 'Amlock',
@@ -45,12 +51,7 @@ export class SettingsComponent implements OnInit {
         title: 'Flexcube',
         description: 'Manage Flexcube settings'
       },
-      {
-        id: 'payment-file',
-        icon: 'heroicons_outline:document-text',
-        title: 'NI Payment Files',
-        description: 'Manage NI payment files'
-      }
+      
     ];
   }
   getPanelInfo(id: string): any

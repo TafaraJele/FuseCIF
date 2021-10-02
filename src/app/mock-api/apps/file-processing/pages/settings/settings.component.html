@@ -75,26 +75,27 @@
                 <!-- Load settings panel -->
                 <div class="mt-8">
                     <ng-container [ngSwitch]="selectedPanel">
-                        <!-- Account -->
+                        <!-- cif -->
                         <ng-container *ngSwitchCase="'cif'">
                             <app-settings-cif></app-settings-cif>
                         </ng-container>
-                        <!-- Security -->
-                        <ng-container *ngSwitchCase="'amlock'">
-                            <app-settings-amlock></app-settings-amlock>
-                        </ng-container>
-                        <!-- Plan & Billing -->
-                        <ng-container *ngSwitchCase="'fimi'">
-                            <app-settings-fimi></app-settings-fimi>
-                        </ng-container>
-                        <!-- Notifications -->
-                        <ng-container *ngSwitchCase="'flexcube'">
-                            <app-settings-flexcube></app-settings-flexcube>
-                        </ng-container>
-                        <!-- Team -->
+                         <!-- payment-file -->
                         <ng-container *ngSwitchCase="'payment-file'">
                             <app-settings-payment-file></app-settings-payment-file>
                         </ng-container>
+                        <!-- amlock -->
+                        <ng-container *ngSwitchCase="'amlock'">
+                            <app-settings-amlock></app-settings-amlock>
+                        </ng-container>
+                        <!-- fimi-->
+                        <ng-container *ngSwitchCase="'fimi'">
+                            <app-settings-fimi></app-settings-fimi>
+                        </ng-container>
+                        <!-- flexcube -->
+                        <ng-container *ngSwitchCase="'flexcube'">
+                            <app-settings-flexcube></app-settings-flexcube>
+                        </ng-container>                       
+                        
                     </ng-container>
                 </div>
 
